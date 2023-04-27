@@ -16,6 +16,10 @@ func tableNomadNode(ctx context.Context) *plugin.Table {
 		List: &plugin.ListConfig{
 			Hydrate: listNodes,
 		},
+		Get: &plugin.GetConfig{
+			KeyColumns: plugin.SingleColumn("id"),
+			Hydrate: getNode,
+		},
 		Columns: []*plugin.Column{
 			{
 				Name:        "id",
@@ -121,8 +125,24 @@ func listNodes(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 		plugin.Logger(ctx).Error("nomad_node.listNodes", "connection_error", err)
 		return nil, err
 	}
+
+		maxLimit := int64(1000)
+		if d.QueryContext.Limit != nil {
+			if (*d.QueryContext.Limit < maxLimit){
+				maxLimit = *d.QueryContext.Limit
+			}
+		}
+
 	nodeClient := client.Nodes()
-	input := &api.QueryOptions{}
+	input := &api.QueryOptions{
+		PerPage: int32(maxLimit),
+	}
+
+	// Add support for optional region qual
+	if d.EqualsQuals["datacenter"] != nil {
+		input.Region = d.EqualsQuals["datacenter"].GetStringValue()
+	}
+
 	for {
 		nodes, metadata, err := nodeClient.List(input)
 		if err != nil {
@@ -145,4 +165,25 @@ func listNodes(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 	}
 
 	return nil, nil
+}
+
+func getNode(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+	logger := plugin.Logger(ctx)
+	id := d.EqualsQualString("id")
+	// Create client
+	input := &api.QueryOptions{}
+	client, err := getClient(ctx, d)
+	nodeClient := client.Nodes()
+	if err != nil {
+		logger.Error("nomad_node.getNode", "connection_error", err)
+		return nil, err
+	}
+
+	node, _, err := nodeClient.Info(id, input)
+	if err != nil {
+		logger.Error("nomad_node.getNode", "api_error", err)
+		return nil, err
+	}
+
+	return node, nil
 }
