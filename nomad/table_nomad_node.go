@@ -122,18 +122,25 @@ func listNodes(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 		return nil, err
 	}
 	nodeClient := client.Nodes()
-	nodes, _, err := nodeClient.List(&api.QueryOptions{})
-	if err != nil {
-		plugin.Logger(ctx).Error("nomad_node.listNodes", "query_error", err)
-		return nil, err
-	}
+	input := &api.QueryOptions{}
+	for {
+		nodes, metadata, err := nodeClient.List(input)
+		if err != nil {
+			plugin.Logger(ctx).Error("nomad_node.listNodes", "query_error", err)
+			return nil, err
+		}
 
-	for _, node := range nodes {
-		d.StreamListItem(ctx, node)
+		for _, node := range nodes {
+			d.StreamListItem(ctx, node)
 
-		// Context can be cancelled due to manual cancellation or the limit has been hit
-		if d.RowsRemaining(ctx) == 0 {
-			return nil, nil
+			// Context can be cancelled due to manual cancellation or the limit has been hit
+			if d.RowsRemaining(ctx) == 0 {
+				return nil, nil
+			}
+		}
+		input.NextToken = metadata.NextToken
+		if input.NextToken == "" {
+			break
 		}
 	}
 
