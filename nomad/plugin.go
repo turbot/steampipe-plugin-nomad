@@ -20,7 +20,9 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			NewInstance: ConfigInstance,
 			Schema:      ConfigSchema,
 		},
-		TableMap: map[string]*plugin.Table{},
+		TableMap: map[string]*plugin.Table{
+			"nomad_node": tableNomadNode(ctx),
+		},
 	}
 	return p
 }

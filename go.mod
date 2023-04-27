@@ -1,6 +1,6 @@
 module github.com/steampipe-plugin-nomad
 
-go 1.20
+go 1.19
 
 require github.com/hashicorp/nomad/api v0.0.0-20230425144744-f12c957b4dae
 
