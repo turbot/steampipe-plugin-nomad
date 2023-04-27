@@ -121,7 +121,7 @@ func listNodes(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 		plugin.Logger(ctx).Error("nomad_node.listNodes", "connection_error", err)
 		return nil, err
 	}
-	nodeClient := client.Nodes()
+	nodeClient := client.ACLPolicies()
 	input := &api.QueryOptions{}
 	for {
 		nodes, metadata, err := nodeClient.List(input)
