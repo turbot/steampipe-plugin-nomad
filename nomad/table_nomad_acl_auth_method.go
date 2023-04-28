@@ -118,7 +118,12 @@ func listACLAuthMethods(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydr
 
 func getACLAuthMethod(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	logger := plugin.Logger(ctx)
-	name := d.EqualsQualString("name")
+	var name string
+	if h.Item != nil {
+		name = h.Item.(*api.ACLAuthMethodListStub).Name
+	} else {
+		name = d.EqualsQualString("name")
+	}
 
 	// check if name is empty
 	if name == "" {
