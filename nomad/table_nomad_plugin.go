@@ -22,7 +22,7 @@ func tableNomadPlugin(ctx context.Context) *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{
-				Name:        "name",
+				Name:        "id",
 				Type:        proto.ColumnType_STRING,
 				Description: "The name of the plugin.",
 			},
