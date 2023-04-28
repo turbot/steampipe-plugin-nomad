@@ -3,44 +3,39 @@ package nomad
 import (
 	"context"
 
-	"github.com/hashicorp/nomad/api"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
-func tableNomadNode(ctx context.Context) *plugin.Table {
+func tableNomadAgent(ctx context.Context) *plugin.Table {
 	return &plugin.Table{
-		Name:        "nomad_node",
-		Description: "Retrieve information about your nodes.",
+		Name:        "nomad_agent",
+		Description: "Retrieve information about your agents.",
 		List: &plugin.ListConfig{
-			Hydrate: listNodes,
-		},
-		Get: &plugin.GetConfig{
-			KeyColumns: plugin.SingleColumn("id"),
-			Hydrate:    getNode,
+			Hydrate: listAgents,
 		},
 		Columns: []*plugin.Column{
 			{
 				Name:        "id",
 				Type:        proto.ColumnType_STRING,
-				Description: "The id of the node.",
+				Description: "The id of the agent.",
 				Transform:   transform.FromField("ID"),
 			},
 			{
 				Name:        "name",
 				Type:        proto.ColumnType_STRING,
-				Description: "The name of the node.",
+				Description: "The name of the agent.",
 			},
 			{
 				Name:        "status",
 				Type:        proto.ColumnType_STRING,
-				Description: "The status of the node.",
+				Description: "The status of the agent.",
 			},
 			{
 				Name:        "address",
 				Type:        proto.ColumnType_STRING,
-				Description: "The address of the node.",
+				Description: "The address of the agent.",
 			},
 
 			{
@@ -64,7 +59,7 @@ func tableNomadNode(ctx context.Context) *plugin.Table {
 				Description: "The version of the vault metadata.",
 			},
 			{
-				Name:        "node_class",
+				Name:        "agent_class",
 				Type:        proto.ColumnType_STRING,
 				Description: "Date and time when the vault was created.",
 			},
@@ -99,7 +94,7 @@ func tableNomadNode(ctx context.Context) *plugin.Table {
 				Description: "Date and time when the vault or its contents were last changed.",
 			},
 			{
-				Name:        "node_resources",
+				Name:        "agent_resources",
 				Type:        proto.ColumnType_JSON,
 				Description: "Date and time when the vault or its contents were last changed.",
 			},
@@ -111,99 +106,87 @@ func tableNomadNode(ctx context.Context) *plugin.Table {
 			{
 				Name:        "http_address",
 				Type:        proto.ColumnType_STRING,
-				Description: "HTTP address for the node",
-				Hydrate:     getNode,
+				Description: "HTTP address for the agent",
 			},
 
 			{
 				Name:        "tls_enabled",
 				Type:        proto.ColumnType_BOOL,
-				Description: "Whether TLS is enabled for the node's HTTP address",
-				Hydrate:     getNode,
+				Description: "Whether TLS is enabled for the agent's HTTP address",
 			},
 
 			{
 				Name:        "resources",
 				Type:        proto.ColumnType_JSON,
-				Description: "Resources allocated to the node",
-				Hydrate:     getNode,
+				Description: "Resources allocated to the agent",
 			},
 
 			{
 				Name:        "links",
 				Type:        proto.ColumnType_JSON,
-				Description: "Links to other nodes or entities",
-				Hydrate:     getNode,
+				Description: "Links to other agents or entities",
 			},
 
 			{
 				Name:        "meta",
 				Type:        proto.ColumnType_JSON,
-				Description: "Metadata associated with the node",
-				Hydrate:     getNode,
+				Description: "Metadata associated with the agent",
 			},
 
 			{
 				Name:        "cgroup_parent",
 				Type:        proto.ColumnType_STRING,
-				Description: "The parent cgroup for the node",
-				Hydrate:     getNode,
+				Description: "The parent cgroup for the agent",
 			},
 
 			{
 				Name:        "drain_strategy",
 				Type:        proto.ColumnType_JSON,
-				Description: "The strategy used to drain the node",
-				Hydrate:     getNode,
+				Description: "The strategy used to drain the agent",
 			},
 
 			{
 				Name:        "status_updated_at",
 				Type:        proto.ColumnType_TIMESTAMP,
-				Description: "The timestamp of the last status update for the node",
-				Hydrate:     getNode,
-				Transform:   transform.FromField("StatusUpdatedAt").Transform(transform.UnixToTimestamp),
+				Description: "The timestamp of the last status update for the agent",
+
+				Transform: transform.FromField("StatusUpdatedAt").Transform(transform.UnixToTimestamp),
 			},
 
 			{
 				Name:        "events",
 				Type:        proto.ColumnType_JSON,
-				Description: "Events associated with the node",
-				Hydrate:     getNode,
+				Description: "Events associated with the agent",
 			},
 
 			{
 				Name:        "host_volumes",
 				Type:        proto.ColumnType_JSON,
-				Description: "Volumes attached to the node",
-				Hydrate:     getNode,
+				Description: "Volumes attached to the agent",
 			},
 
 			{
 				Name:        "host_networks",
 				Type:        proto.ColumnType_JSON,
-				Description: "Networks attached to the node",
-				Hydrate:     getNode,
+				Description: "Networks attached to the agent",
 			},
 
 			{
 				Name:        "csi_controller_plugins",
 				Type:        proto.ColumnType_JSON,
-				Description: "CSI controller plugins attached to the node",
-				Hydrate:     getNode,
+				Description: "CSI controller plugins attached to the agent",
 			},
 
 			{
-				Name:        "csi_node_plugins",
+				Name:        "csi_agent_plugins",
 				Type:        proto.ColumnType_JSON,
-				Description: "CSI node plugins attached to the node",
-				Hydrate:     getNode,
+				Description: "CSI agent plugins attached to the agent",
 			},
 
 			/// Steampipe standard columns
 			{
 				Name:        "title",
-				Description: "The title of the node.",
+				Description: "The title of the agent.",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Name"),
 			},
@@ -211,10 +194,10 @@ func tableNomadNode(ctx context.Context) *plugin.Table {
 	}
 }
 
-func listNodes(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+func listAgents(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	client, err := getClient(ctx, d)
 	if err != nil {
-		plugin.Logger(ctx).Error("nomad_node.listNodes", "connection_error", err)
+		plugin.Logger(ctx).Error("nomad_agent.listAgents", "connection_error", err)
 		return nil, err
 	}
 
@@ -225,59 +208,20 @@ func listNodes(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 		}
 	}
 
-	input := &api.QueryOptions{
-		PerPage: int32(maxLimit),
+	servers, err := client.Agent().Members()
+	if err != nil {
+		plugin.Logger(ctx).Error("nomad_agent.listAgents", "query_error", err)
+		return nil, err
 	}
 
-	if d.EqualsQuals["datacenter"] != nil {
-		input.Region = d.EqualsQuals["datacenter"].GetStringValue()
-	}
+	for _, server := range servers.Members {
+		d.StreamListItem(ctx, server)
 
-	for {
-		nodes, metadata, err := client.Nodes().List(input)
-		if err != nil {
-			plugin.Logger(ctx).Error("nomad_node.listNodes", "query_error", err)
-			return nil, err
-		}
-
-		for _, node := range nodes {
-			d.StreamListItem(ctx, node)
-
-			// Context can be cancelled due to manual cancellation or the limit has been hit
-			if d.RowsRemaining(ctx) == 0 {
-				return nil, nil
-			}
-		}
-		input.NextToken = metadata.NextToken
-		if input.NextToken == "" {
-			break
+		// Context can be cancelled due to manual cancellation or the limit has been hit
+		if d.RowsRemaining(ctx) == 0 {
+			return nil, nil
 		}
 	}
 
 	return nil, nil
-}
-
-func getNode(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	logger := plugin.Logger(ctx)
-	var id string
-	if h.Item != nil {
-		id = h.Item.(*api.NodeListStub).ID
-	} else {
-		id = d.EqualsQualString("id")
-	}
-
-	// Create client
-	client, err := getClient(ctx, d)
-	if err != nil {
-		logger.Error("nomad_node.getNode", "connection_error", err)
-		return nil, err
-	}
-
-	node, _, err := client.Nodes().Info(id, &api.QueryOptions{})
-	if err != nil {
-		logger.Error("nomad_node.getNode", "api_error", err)
-		return nil, err
-	}
-
-	return node, nil
 }

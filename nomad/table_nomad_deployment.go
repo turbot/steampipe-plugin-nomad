@@ -124,7 +124,6 @@ func listDeployments(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 		}
 	}
 
-	deploymentClient := client.Deployments()
 	input := &api.QueryOptions{
 		PerPage: int32(maxLimit),
 	}
@@ -134,7 +133,7 @@ func listDeployments(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 	}
 
 	for {
-		deployments, metadata, err := deploymentClient.List(input)
+		deployments, metadata, err := client.Deployments().List(input)
 		if err != nil {
 			plugin.Logger(ctx).Error("nomad_deployment.listDeployments", "api_error", err)
 			return nil, err
@@ -168,13 +167,12 @@ func getDeployment(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDa
 
 	// Create client
 	client, err := getClient(ctx, d)
-	deploymentClient := client.Deployments()
 	if err != nil {
 		logger.Error("nomad_node.getDeployment", "connection_error", err)
 		return nil, err
 	}
 
-	deployment, _, err := deploymentClient.Info(id, &api.QueryOptions{})
+	deployment, _, err := client.Deployments().Info(id, &api.QueryOptions{})
 	if err != nil {
 		logger.Error("nomad_node.getDeployment", "api_error", err)
 		return nil, err

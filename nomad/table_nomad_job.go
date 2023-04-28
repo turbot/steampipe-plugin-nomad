@@ -255,7 +255,6 @@ func listJobs(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (
 		}
 	}
 
-	jobClient := client.Jobs()
 	input := &api.QueryOptions{
 		PerPage: int32(maxLimit),
 	}
@@ -266,7 +265,7 @@ func listJobs(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (
 	}
 
 	for {
-		jobs, metadata, err := jobClient.List(input)
+		jobs, metadata, err := client.Jobs().List(input)
 		if err != nil {
 			plugin.Logger(ctx).Error("nomad_job.listJobs", "query_error", err)
 			return nil, err
@@ -305,13 +304,12 @@ func getJob(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (in
 
 	// Create client
 	client, err := getClient(ctx, d)
-	jobClient := client.Jobs()
 	if err != nil {
 		logger.Error("nomad_node.getJob", "connection_error", err)
 		return nil, err
 	}
 
-	job, _, err := jobClient.Info(id, &api.QueryOptions{})
+	job, _, err := client.Jobs().Info(id, &api.QueryOptions{})
 	if err != nil {
 		logger.Error("nomad_node.getJob", "api_error", err)
 		return nil, err

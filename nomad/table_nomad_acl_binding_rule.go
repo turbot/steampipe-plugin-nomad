@@ -9,58 +9,58 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
-func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
+func tableNomadACLBindingRule(ctx context.Context) *plugin.Table {
 	return &plugin.Table{
-		Name:        "nomad_acl_auth_method",
-		Description: "Retrieve information about your ACL auth methods.",
+		Name:        "nomad_acl_binding_rule",
+		Description: "Retrieve information about your ACL binding rules.",
 		List: &plugin.ListConfig{
-			Hydrate: listACLAuthMethods,
+			Hydrate: listACLBindingRules,
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("name"),
-			Hydrate:    getACLAuthMethod,
+			Hydrate:    getACLBindingRule,
 		},
 		Columns: []*plugin.Column{
 			{
 				Name:        "name",
 				Type:        proto.ColumnType_STRING,
-				Description: "The name of the acl_auth_method.",
+				Description: "The name of the acl_binding_rule.",
 			},
 			{
 				Name:        "description",
 				Type:        proto.ColumnType_STRING,
-				Description: "The description of the acl_auth_method.",
+				Description: "The description of the acl_binding_rule.",
 			},
 			{
 				Name:        "quota",
 				Type:        proto.ColumnType_STRING,
-				Description: "The quota of the acl_auth_method.",
+				Description: "The quota of the acl_binding_rule.",
 			},
 			{
 				Name:        "capabilities",
 				Type:        proto.ColumnType_JSON,
-				Description: "The capabilities of the acl_auth_method.",
+				Description: "The capabilities of the acl_binding_rule.",
 			},
 			{
 				Name:        "meta",
 				Type:        proto.ColumnType_JSON,
-				Description: "The metadata associated with the acl_auth_method.",
+				Description: "The metadata associated with the acl_binding_rule.",
 			},
 			{
 				Name:        "create_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The index when the acl_auth_method was created.",
+				Description: "The index when the acl_binding_rule was created.",
 			},
 			{
 				Name:        "modify_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The index when the acl_auth_method was last modified.",
+				Description: "The index when the acl_binding_rule was last modified.",
 			},
 
 			/// Steampipe standard columns
 			{
 				Name:        "title",
-				Description: "The title of the acl_auth_method.",
+				Description: "The title of the acl_binding_rule.",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Name"),
 			},
@@ -68,10 +68,10 @@ func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
 	}
 }
 
-func listACLAuthMethods(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+func listACLBindingRules(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	client, err := getClient(ctx, d)
 	if err != nil {
-		plugin.Logger(ctx).Error("nomad_acl_auth_method.listACLAuthMethods", "connection_error", err)
+		plugin.Logger(ctx).Error("nomad_acl_binding_rule.listACLBindingRules", "connection_error", err)
 		return nil, err
 	}
 
@@ -92,14 +92,14 @@ func listACLAuthMethods(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydr
 	}
 
 	for {
-		authMethods, metadata, err := client.ACLAuthMethods().List(input)
+		bindingRules, metadata, err := client.ACLBindingRules().List(input)
 		if err != nil {
-			plugin.Logger(ctx).Error("nomad_acl_auth_method.listACLAuthMethods", "query_error", err)
+			plugin.Logger(ctx).Error("nomad_acl_binding_rule.listACLBindingRules", "query_error", err)
 			return nil, err
 		}
 
-		for _, authMethod := range authMethods {
-			d.StreamListItem(ctx, authMethod)
+		for _, bindingRule := range bindingRules {
+			d.StreamListItem(ctx, bindingRule)
 
 			// Context can be cancelled due to manual cancellation or the limit has been hit
 			if d.RowsRemaining(ctx) == 0 {
@@ -115,32 +115,32 @@ func listACLAuthMethods(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydr
 	return nil, nil
 }
 
-func getACLAuthMethod(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+func getACLBindingRule(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	logger := plugin.Logger(ctx)
-	var name string
+	var id string
 	if h.Item != nil {
-		name = h.Item.(*api.ACLAuthMethodListStub).Name
+		id = h.Item.(*api.ACLBindingRuleListStub).ID
 	} else {
-		name = d.EqualsQualString("name")
+		id = d.EqualsQualString("id")
 	}
 
-	// check if name is empty
-	if name == "" {
+	// check if id is empty
+	if id == "" {
 		return nil, nil
 	}
 
 	// Create client
 	client, err := getClient(ctx, d)
 	if err != nil {
-		logger.Error("nomad_acl_auth_method.getACLAuthMethod", "connection_error", err)
+		logger.Error("nomad_acl_binding_rule.getACLBindingRule", "connection_error", err)
 		return nil, err
 	}
 
-	authMethod, _, err := client.ACLAuthMethods().Get(name, &api.QueryOptions{})
+	bindingRule, _, err := client.ACLBindingRules().Get(id, &api.QueryOptions{})
 	if err != nil {
-		logger.Error("nomad_acl_auth_method.getACLAuthMethod", "api_error", err)
+		logger.Error("nomad_acl_binding_rule.getACLBindingRule", "api_error", err)
 		return nil, err
 	}
 
-	return authMethod, nil
+	return bindingRule, nil
 }

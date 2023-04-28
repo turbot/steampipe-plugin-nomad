@@ -21,11 +21,16 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			Schema:      ConfigSchema,
 		},
 		TableMap: map[string]*plugin.Table{
-			"nomad_node":            tableNomadNode(ctx),
-			"nomad_job":             tableNomadJob(ctx),
-			"nomad_namespace":       tableNomadNamespace(ctx),
-			"nomad_deployment":      tableNomadDeployment(ctx),
-			"nomad_acl_auth_method": tableNomadACLAuthMethod(ctx),
+			"nomad_node":             tableNomadNode(ctx),
+			"nomad_job":              tableNomadJob(ctx),
+			"nomad_namespace":        tableNomadNamespace(ctx),
+			"nomad_deployment":       tableNomadDeployment(ctx),
+			"nomad_acl_auth_method":  tableNomadACLAuthMethod(ctx),
+			"nomad_acl_binding_rule": tableNomadACLBindingRule(ctx),
+			"nomad_acl_policy":       tableNomadACLPolicy(ctx),
+			"nomad_volume":           tableNomadVolume(ctx),
+			"nomad_plugin":           tableNomadPlugin(ctx),
+			"nomad_agent":            tableNomadAgent(ctx),
 		},
 	}
 	return p

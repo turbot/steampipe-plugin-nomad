@@ -24,7 +24,7 @@ func shouldRetryError(retryErrors []string) plugin.ErrorPredicateWithContext {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData, err error) bool {
 
 		for _, pattern := range retryErrors {
-			// handle not found error
+			// handle retry error
 			if strings.Contains(err.Error(), pattern) {
 				return true
 			}

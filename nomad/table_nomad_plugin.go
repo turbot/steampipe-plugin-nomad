@@ -9,58 +9,58 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
-func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
+func tableNomadPlugin(ctx context.Context) *plugin.Table {
 	return &plugin.Table{
-		Name:        "nomad_acl_auth_method",
-		Description: "Retrieve information about your ACL auth methods.",
+		Name:        "nomad_plugin",
+		Description: "Retrieve information about your plugins.",
 		List: &plugin.ListConfig{
-			Hydrate: listACLAuthMethods,
+			Hydrate: listPlugins,
 		},
 		Get: &plugin.GetConfig{
-			KeyColumns: plugin.SingleColumn("name"),
-			Hydrate:    getACLAuthMethod,
+			KeyColumns: plugin.SingleColumn("id"),
+			Hydrate:    getPlugin,
 		},
 		Columns: []*plugin.Column{
 			{
 				Name:        "name",
 				Type:        proto.ColumnType_STRING,
-				Description: "The name of the acl_auth_method.",
+				Description: "The name of the plugin.",
 			},
 			{
 				Name:        "description",
 				Type:        proto.ColumnType_STRING,
-				Description: "The description of the acl_auth_method.",
+				Description: "The description of the plugin.",
 			},
 			{
 				Name:        "quota",
 				Type:        proto.ColumnType_STRING,
-				Description: "The quota of the acl_auth_method.",
+				Description: "The quota of the plugin.",
 			},
 			{
 				Name:        "capabilities",
 				Type:        proto.ColumnType_JSON,
-				Description: "The capabilities of the acl_auth_method.",
+				Description: "The capabilities of the plugin.",
 			},
 			{
 				Name:        "meta",
 				Type:        proto.ColumnType_JSON,
-				Description: "The metadata associated with the acl_auth_method.",
+				Description: "The metadata associated with the plugin.",
 			},
 			{
 				Name:        "create_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The index when the acl_auth_method was created.",
+				Description: "The index when the plugin was created.",
 			},
 			{
 				Name:        "modify_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The index when the acl_auth_method was last modified.",
+				Description: "The index when the plugin was last modified.",
 			},
 
 			/// Steampipe standard columns
 			{
 				Name:        "title",
-				Description: "The title of the acl_auth_method.",
+				Description: "The title of the plugin.",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Name"),
 			},
@@ -68,10 +68,10 @@ func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
 	}
 }
 
-func listACLAuthMethods(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+func listPlugins(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	client, err := getClient(ctx, d)
 	if err != nil {
-		plugin.Logger(ctx).Error("nomad_acl_auth_method.listACLAuthMethods", "connection_error", err)
+		plugin.Logger(ctx).Error("nomad_plugin.listPlugins", "connection_error", err)
 		return nil, err
 	}
 
@@ -92,14 +92,14 @@ func listACLAuthMethods(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydr
 	}
 
 	for {
-		authMethods, metadata, err := client.ACLAuthMethods().List(input)
+		plugins, metadata, err := client.CSIPlugins().List(input)
 		if err != nil {
-			plugin.Logger(ctx).Error("nomad_acl_auth_method.listACLAuthMethods", "query_error", err)
+			plugin.Logger(ctx).Error("nomad_plugin.listPlugins", "query_error", err)
 			return nil, err
 		}
 
-		for _, authMethod := range authMethods {
-			d.StreamListItem(ctx, authMethod)
+		for _, plugin := range plugins {
+			d.StreamListItem(ctx, plugin)
 
 			// Context can be cancelled due to manual cancellation or the limit has been hit
 			if d.RowsRemaining(ctx) == 0 {
@@ -115,32 +115,32 @@ func listACLAuthMethods(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydr
 	return nil, nil
 }
 
-func getACLAuthMethod(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+func getPlugin(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	logger := plugin.Logger(ctx)
-	var name string
+	var id string
 	if h.Item != nil {
-		name = h.Item.(*api.ACLAuthMethodListStub).Name
+		id = h.Item.(*api.CSIPluginListStub).ID
 	} else {
-		name = d.EqualsQualString("name")
+		id = d.EqualsQualString("id")
 	}
 
-	// check if name is empty
-	if name == "" {
+	// check if id is empty
+	if id == "" {
 		return nil, nil
 	}
 
 	// Create client
 	client, err := getClient(ctx, d)
 	if err != nil {
-		logger.Error("nomad_acl_auth_method.getACLAuthMethod", "connection_error", err)
+		logger.Error("nomad_node.getPlugin", "connection_error", err)
 		return nil, err
 	}
 
-	authMethod, _, err := client.ACLAuthMethods().Get(name, &api.QueryOptions{})
+	plugin, _, err := client.CSIPlugins().Info(id, &api.QueryOptions{})
 	if err != nil {
-		logger.Error("nomad_acl_auth_method.getACLAuthMethod", "api_error", err)
+		logger.Error("nomad_node.getPlugin", "api_error", err)
 		return nil, err
 	}
 
-	return authMethod, nil
+	return plugin, nil
 }

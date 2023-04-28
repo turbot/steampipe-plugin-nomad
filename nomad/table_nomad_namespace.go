@@ -82,7 +82,6 @@ func listNamespaces(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateD
 		}
 	}
 
-	namespaceClient := client.Namespaces()
 	input := &api.QueryOptions{
 		PerPage: int32(maxLimit),
 	}
@@ -93,7 +92,7 @@ func listNamespaces(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateD
 	}
 
 	for {
-		namespaces, metadata, err := namespaceClient.List(input)
+		namespaces, metadata, err := client.Namespaces().List(input)
 		if err != nil {
 			plugin.Logger(ctx).Error("nomad_namespace.listNamespaces", "query_error", err)
 			return nil, err
@@ -132,8 +131,7 @@ func getNamespace(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDat
 		return nil, err
 	}
 
-	namespaceClient := client.Namespaces()
-	namespace, _, err := namespaceClient.Info(name, &api.QueryOptions{})
+	namespace, _, err := client.Namespaces().Info(name, &api.QueryOptions{})
 	if err != nil {
 		logger.Error("nomad_node.getNamespace", "api_error", err)
 		return nil, err
