@@ -3,6 +3,7 @@ package nomad
 import (
 	"context"
 	"errors"
+	"os"
 
 	"github.com/hashicorp/nomad/api"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
@@ -10,15 +11,15 @@ import (
 )
 
 type nomadConfig struct {
-	Address *string `cty:"address"`
-	Region  *string `cty:"region"`
+	Address  *string `cty:"address"`
+	SecretID *string `cty:"secret_id"`
 }
 
 var ConfigSchema = map[string]*schema.Attribute{
 	"address": {
 		Type: schema.TypeString,
 	},
-	"region": {
+	"secret_id": {
 		Type: schema.TypeString,
 	},
 }
@@ -38,22 +39,20 @@ func GetConfig(connection *plugin.Connection) nomadConfig {
 func getClient(ctx context.Context, d *plugin.QueryData) (*api.Client, error) {
 	nomadConfig := GetConfig(d.Connection)
 
-	// token := os.Getenv("OP_CONNECT_TOKEN")
-	// url := os.Getenv("OP_CONNECT_HOST")
-	address := ""
-	region := ""
+	address := os.Getenv("NOMAD_ADDR")
+	secretId := os.Getenv("NOMAD_TOKEN")
+
 	if nomadConfig.Address != nil {
 		address = *nomadConfig.Address
 	}
-	// if nomadConfig.Region != nil {
-	// 	region = *nomadConfig.Region
-	// }
+	if nomadConfig.SecretID != nil {
+		secretId = *nomadConfig.SecretID
+	}
 
 	if address != "" {
 		con := api.DefaultConfig()
 		con.Address = address
-		con.Region = region
-		con.SecretID = "c178b810-8b18-6f38-016f-725ddec5d587"
+		con.SecretID = secretId
 		client, _ := api.NewClient(con)
 		return client, nil
 	}

@@ -12,7 +12,7 @@ import (
 func tableNomadNode(ctx context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "nomad_node",
-		Description: "",
+		Description: "Retrieve information about your nodes.",
 		List: &plugin.ListConfig{
 			Hydrate: listNodes,
 		},
@@ -24,24 +24,25 @@ func tableNomadNode(ctx context.Context) *plugin.Table {
 			{
 				Name:        "id",
 				Type:        proto.ColumnType_STRING,
-				Description: "The UUID of the vault.",
+				Description: "The id of the node.",
 				Transform:   transform.FromField("ID"),
 			},
 			{
 				Name:        "name",
 				Type:        proto.ColumnType_STRING,
-				Description: "The name of the vault.",
-			},
-			{
-				Name:        "address",
-				Type:        proto.ColumnType_STRING,
-				Description: "The version of the vault metadata.",
+				Description: "The name of the node.",
 			},
 			{
 				Name:        "status",
 				Type:        proto.ColumnType_STRING,
-				Description: "The version of the vault metadata.",
+				Description: "The status of the node.",
 			},
+			{
+				Name:        "address",
+				Type:        proto.ColumnType_STRING,
+				Description: "The address of the node.",
+			},
+
 			{
 				Name:        "create_index",
 				Type:        proto.ColumnType_INT,
@@ -107,11 +108,102 @@ func tableNomadNode(ctx context.Context) *plugin.Table {
 				Type:        proto.ColumnType_JSON,
 				Description: "Date and time when the vault or its contents were last changed.",
 			},
+			{
+				Name:        "http_address",
+				Type:        proto.ColumnType_STRING,
+				Description: "HTTP address for the node",
+				Hydrate:     getNode,
+			},
+
+			{
+				Name:        "tls_enabled",
+				Type:        proto.ColumnType_BOOL,
+				Description: "Whether TLS is enabled for the node's HTTP address",
+				Hydrate:     getNode,
+			},
+
+			{
+				Name:        "resources",
+				Type:        proto.ColumnType_JSON,
+				Description: "Resources allocated to the node",
+				Hydrate:     getNode,
+			},
+
+			{
+				Name:        "links",
+				Type:        proto.ColumnType_JSON,
+				Description: "Links to other nodes or entities",
+				Hydrate:     getNode,
+			},
+
+			{
+				Name:        "meta",
+				Type:        proto.ColumnType_JSON,
+				Description: "Metadata associated with the node",
+				Hydrate:     getNode,
+			},
+
+			{
+				Name:        "cgroup_parent",
+				Type:        proto.ColumnType_STRING,
+				Description: "The parent cgroup for the node",
+				Hydrate:     getNode,
+			},
+
+			{
+				Name:        "drain_strategy",
+				Type:        proto.ColumnType_JSON,
+				Description: "The strategy used to drain the node",
+				Hydrate:     getNode,
+			},
+
+			{
+				Name:        "status_updated_at",
+				Type:        proto.ColumnType_TIMESTAMP,
+				Description: "The timestamp of the last status update for the node",
+				Hydrate:     getNode,
+				Transform:   transform.FromField("StatusUpdatedAt").Transform(transform.UnixToTimestamp),
+			},
+
+			{
+				Name:        "events",
+				Type:        proto.ColumnType_JSON,
+				Description: "Events associated with the node",
+				Hydrate:     getNode,
+			},
+
+			{
+				Name:        "host_volumes",
+				Type:        proto.ColumnType_JSON,
+				Description: "Volumes attached to the node",
+				Hydrate:     getNode,
+			},
+
+			{
+				Name:        "host_networks",
+				Type:        proto.ColumnType_JSON,
+				Description: "Networks attached to the node",
+				Hydrate:     getNode,
+			},
+
+			{
+				Name:        "csi_controller_plugins",
+				Type:        proto.ColumnType_JSON,
+				Description: "CSI controller plugins attached to the node",
+				Hydrate:     getNode,
+			},
+
+			{
+				Name:        "csi_node_plugins",
+				Type:        proto.ColumnType_JSON,
+				Description: "CSI node plugins attached to the node",
+				Hydrate:     getNode,
+			},
 
 			/// Steampipe standard columns
 			{
 				Name:        "title",
-				Description: "The title of the vault.",
+				Description: "The title of the node.",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Name"),
 			},
@@ -168,9 +260,14 @@ func listNodes(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 
 func getNode(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	logger := plugin.Logger(ctx)
-	id := d.EqualsQualString("id")
+	var id string
+	if h.Item != nil {
+		id = h.Item.(*api.NodeListStub).ID
+	} else {
+		id = d.EqualsQualString("id")
+	}
+
 	// Create client
-	input := &api.QueryOptions{}
 	client, err := getClient(ctx, d)
 	nodeClient := client.Nodes()
 	if err != nil {
@@ -178,7 +275,7 @@ func getNode(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 		return nil, err
 	}
 
-	node, _, err := nodeClient.Info(id, input)
+	node, _, err := nodeClient.Info(id, &api.QueryOptions{})
 	if err != nil {
 		logger.Error("nomad_node.getNode", "api_error", err)
 		return nil, err
