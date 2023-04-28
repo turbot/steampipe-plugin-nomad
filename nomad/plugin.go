@@ -31,6 +31,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"nomad_volume":           tableNomadVolume(ctx),
 			"nomad_plugin":           tableNomadPlugin(ctx),
 			"nomad_agent":            tableNomadAgent(ctx),
+			"nomad_acl_role":         tableNomadACLRole(ctx),
 		},
 	}
 	return p

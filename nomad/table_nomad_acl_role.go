@@ -22,39 +22,35 @@ func tableNomadACLRole(ctx context.Context) *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{
+				Name:        "id",
+				Type:        proto.ColumnType_STRING,
+				Description: "The ID of the ACL role.",
+				Transform:   transform.FromField("ID"),
+			},
+			{
 				Name:        "name",
 				Type:        proto.ColumnType_STRING,
-				Description: "The name of the acl_role.",
+				Description: "The name of the ACL role.",
 			},
 			{
 				Name:        "description",
 				Type:        proto.ColumnType_STRING,
-				Description: "The description of the acl_role.",
-			},
-			{
-				Name:        "quota",
-				Type:        proto.ColumnType_STRING,
-				Description: "The quota of the acl_role.",
-			},
-			{
-				Name:        "capabilities",
-				Type:        proto.ColumnType_JSON,
-				Description: "The capabilities of the acl_role.",
-			},
-			{
-				Name:        "meta",
-				Type:        proto.ColumnType_JSON,
-				Description: "The metadata associated with the acl_role.",
+				Description: "A human-readable, operator set description that can provide additional context about the ACL role.",
 			},
 			{
 				Name:        "create_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The index when the acl_role was created.",
+				Description: "The index when the ACL role was created.",
 			},
 			{
 				Name:        "modify_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The index when the acl_role was last modified.",
+				Description: "The index when the ACL role was last modified.",
+			},
+			{
+				Name:        "policies",
+				Type:        proto.ColumnType_JSON,
+				Description: "An array of ACL policy links.",
 			},
 
 			/// Steampipe standard columns

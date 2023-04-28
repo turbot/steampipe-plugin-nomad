@@ -74,11 +74,6 @@ func tableNomadDeployment(ctx context.Context) *plugin.Table {
 				Description: "Specifies if this deployment is part of a multi-region deployment.",
 			},
 			{
-				Name:        "task_groups",
-				Type:        proto.ColumnType_JSON,
-				Description: "Set of task groups effected by the deployment and their current deployment status.",
-			},
-			{
 				Name:        "status",
 				Type:        proto.ColumnType_STRING,
 				Description: "Status of the deployment.",
@@ -97,6 +92,11 @@ func tableNomadDeployment(ctx context.Context) *plugin.Table {
 				Name:        "modify_index",
 				Type:        proto.ColumnType_INT,
 				Description: "Modify index of the deployment.",
+			},
+			{
+				Name:        "task_groups",
+				Type:        proto.ColumnType_JSON,
+				Description: "Set of task groups effected by the deployment and their current deployment status.",
 			},
 
 			/// Steampipe standard columns

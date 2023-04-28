@@ -17,12 +17,6 @@ func tableNomadAgent(ctx context.Context) *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{
-				Name:        "id",
-				Type:        proto.ColumnType_STRING,
-				Description: "The id of the agent.",
-				Transform:   transform.FromField("ID"),
-			},
-			{
 				Name:        "name",
 				Type:        proto.ColumnType_STRING,
 				Description: "The name of the agent.",
@@ -30,157 +24,52 @@ func tableNomadAgent(ctx context.Context) *plugin.Table {
 			{
 				Name:        "status",
 				Type:        proto.ColumnType_STRING,
-				Description: "The status of the agent.",
+				Description: "The current operational status of the agent member.",
 			},
 			{
 				Name:        "address",
 				Type:        proto.ColumnType_STRING,
-				Description: "The address of the agent.",
+				Description: "The IP address or hostname of the agent member.",
 			},
-
 			{
-				Name:        "create_index",
+				Name:        "port",
 				Type:        proto.ColumnType_INT,
-				Description: "The version of the vault metadata.",
+				Description: "The network port number used by the agent member.",
 			},
 			{
-				Name:        "datacenter",
-				Type:        proto.ColumnType_STRING,
-				Description: "The version of the vault metadata.",
-			},
-			{
-				Name:        "drain",
-				Type:        proto.ColumnType_BOOL,
-				Description: "The version of the vault metadata.",
-			},
-			{
-				Name:        "modify_index",
+				Name:        "protocol_min",
 				Type:        proto.ColumnType_INT,
-				Description: "The version of the vault metadata.",
+				Description: "The minimum version of the protocol supported by the agent member.",
 			},
 			{
-				Name:        "agent_class",
-				Type:        proto.ColumnType_STRING,
-				Description: "Date and time when the vault was created.",
+				Name:        "protocol_max",
+				Type:        proto.ColumnType_INT,
+				Description: "The maximum version of the protocol supported by the agent member.",
 			},
 			{
-				Name:        "scheduling_eligibility",
-				Type:        proto.ColumnType_STRING,
-				Description: "The version of the vault contents.",
+				Name:        "protocol_cur",
+				Type:        proto.ColumnType_INT,
+				Description: "The current version of the protocol used by the agent member.",
 			},
 			{
-				Name:        "status_description",
-				Type:        proto.ColumnType_STRING,
-				Description: "The description for the vault.",
+				Name:        "delegate_min",
+				Type:        proto.ColumnType_INT,
+				Description: " The minimum number of delegations allowed by the agent member.",
 			},
 			{
-				Name:        "version",
-				Type:        proto.ColumnType_STRING,
-				Description: "Number of active items in the vault.",
+				Name:        "delegate_max",
+				Type:        proto.ColumnType_INT,
+				Description: "The maximum number of delegations allowed by the agent member.",
 			},
 			{
-				Name:        "attributes",
+				Name:        "delegate_cur",
+				Type:        proto.ColumnType_INT,
+				Description: "The current number of delegations held by the agent member.",
+			},
+			{
+				Name:        "tags",
 				Type:        proto.ColumnType_JSON,
-				Description: "The type of vault. Possible values are EVERYONE, PERSONAL and USER_CREATED.",
-			},
-			{
-				Name:        "drivers",
-				Type:        proto.ColumnType_JSON,
-				Description: "Date and time when the vault or its contents were last changed.",
-			},
-			{
-				Name:        "last_drain",
-				Type:        proto.ColumnType_JSON,
-				Description: "Date and time when the vault or its contents were last changed.",
-			},
-			{
-				Name:        "agent_resources",
-				Type:        proto.ColumnType_JSON,
-				Description: "Date and time when the vault or its contents were last changed.",
-			},
-			{
-				Name:        "reserved_resources",
-				Type:        proto.ColumnType_JSON,
-				Description: "Date and time when the vault or its contents were last changed.",
-			},
-			{
-				Name:        "http_address",
-				Type:        proto.ColumnType_STRING,
-				Description: "HTTP address for the agent",
-			},
-
-			{
-				Name:        "tls_enabled",
-				Type:        proto.ColumnType_BOOL,
-				Description: "Whether TLS is enabled for the agent's HTTP address",
-			},
-
-			{
-				Name:        "resources",
-				Type:        proto.ColumnType_JSON,
-				Description: "Resources allocated to the agent",
-			},
-
-			{
-				Name:        "links",
-				Type:        proto.ColumnType_JSON,
-				Description: "Links to other agents or entities",
-			},
-
-			{
-				Name:        "meta",
-				Type:        proto.ColumnType_JSON,
-				Description: "Metadata associated with the agent",
-			},
-
-			{
-				Name:        "cgroup_parent",
-				Type:        proto.ColumnType_STRING,
-				Description: "The parent cgroup for the agent",
-			},
-
-			{
-				Name:        "drain_strategy",
-				Type:        proto.ColumnType_JSON,
-				Description: "The strategy used to drain the agent",
-			},
-
-			{
-				Name:        "status_updated_at",
-				Type:        proto.ColumnType_TIMESTAMP,
-				Description: "The timestamp of the last status update for the agent",
-
-				Transform: transform.FromField("StatusUpdatedAt").Transform(transform.UnixToTimestamp),
-			},
-
-			{
-				Name:        "events",
-				Type:        proto.ColumnType_JSON,
-				Description: "Events associated with the agent",
-			},
-
-			{
-				Name:        "host_volumes",
-				Type:        proto.ColumnType_JSON,
-				Description: "Volumes attached to the agent",
-			},
-
-			{
-				Name:        "host_networks",
-				Type:        proto.ColumnType_JSON,
-				Description: "Networks attached to the agent",
-			},
-
-			{
-				Name:        "csi_controller_plugins",
-				Type:        proto.ColumnType_JSON,
-				Description: "CSI controller plugins attached to the agent",
-			},
-
-			{
-				Name:        "csi_agent_plugins",
-				Type:        proto.ColumnType_JSON,
-				Description: "CSI agent plugins attached to the agent",
+				Description: "A set of key-value pairs that describe the agent member.",
 			},
 
 			/// Steampipe standard columns

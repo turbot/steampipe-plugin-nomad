@@ -24,37 +24,37 @@ func tableNomadNamespace(ctx context.Context) *plugin.Table {
 			{
 				Name:        "name",
 				Type:        proto.ColumnType_STRING,
-				Description: "The name of the namespace.",
+				Description: "A string representing the name of the namespace.",
 			},
 			{
 				Name:        "description",
 				Type:        proto.ColumnType_STRING,
-				Description: "The description of the namespace.",
+				Description: "A string providing a description or summary of the namespace.",
 			},
 			{
 				Name:        "quota",
 				Type:        proto.ColumnType_STRING,
-				Description: "The quota of the namespace.",
-			},
-			{
-				Name:        "capabilities",
-				Type:        proto.ColumnType_JSON,
-				Description: "The capabilities of the namespace.",
-			},
-			{
-				Name:        "meta",
-				Type:        proto.ColumnType_JSON,
-				Description: "The metadata associated with the namespace.",
+				Description: "A string specifying the maximum usage limit for the namespace.",
 			},
 			{
 				Name:        "create_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The index when the namespace was created.",
+				Description: "An unsigned 64-bit integer representing the index at which the namespace was created.",
 			},
 			{
 				Name:        "modify_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The index when the namespace was last modified.",
+				Description: "An unsigned 64-bit integer representing the index at which the namespace was last modified.",
+			},
+			{
+				Name:        "capabilities",
+				Type:        proto.ColumnType_JSON,
+				Description: "A pointer to a NamespaceCapabilities struct that defines the capabilities of the namespace.",
+			},
+			{
+				Name:        "meta",
+				Type:        proto.ColumnType_JSON,
+				Description: "A map containing additional metadata associated with the namespace.",
 			},
 
 			/// Steampipe standard columns
