@@ -38,30 +38,20 @@ func tableNomadDeployment(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("ID"),
 			},
 			{
+				Name:        "namespace",
+				Type:        proto.ColumnType_STRING,
+				Description: "Namespace the deployment is created in.",
+			},
+			{
 				Name:        "job_id",
 				Type:        proto.ColumnType_STRING,
 				Description: "Job the deployment is created for.",
 				Transform:   transform.FromField("JobID"),
 			},
 			{
-				Name:        "is_multiregion",
-				Type:        proto.ColumnType_BOOL,
-				Description: "Specifies if this deployment is part of a multi-region deployment.",
-			},
-			{
-				Name:        "status",
+				Name:        "job_version",
 				Type:        proto.ColumnType_STRING,
-				Description: "Status of the deployment.",
-			},
-			{
-				Name:        "create_index",
-				Type:        proto.ColumnType_INT,
-				Description: "Create index of the deployment.",
-			},
-			{
-				Name:        "job_create_index",
-				Type:        proto.ColumnType_INT,
-				Description: "Create index of the job which the deployment is tracking.",
+				Description: "Version of the job at which the deployment is tracking.",
 			},
 			{
 				Name:        "job_modify_index",
@@ -74,19 +64,24 @@ func tableNomadDeployment(ctx context.Context) *plugin.Table {
 				Description: "JobModifyIndex of the job which the deployment is tracking.",
 			},
 			{
-				Name:        "job_version",
+				Name:        "job_create_index",
 				Type:        proto.ColumnType_INT,
-				Description: "Version of the job at which the deployment is tracking.",
+				Description: "Create index of the job which the deployment is tracking.",
 			},
 			{
-				Name:        "modify_index",
-				Type:        proto.ColumnType_INT,
-				Description: "ModifyIndex of the deployment.",
+				Name:        "is_multiregion",
+				Type:        proto.ColumnType_BOOL,
+				Description: "Specifies if this deployment is part of a multi-region deployment.",
 			},
 			{
-				Name:        "namespace",
+				Name:        "task_groups",
+				Type:        proto.ColumnType_JSON,
+				Description: "Set of task groups effected by the deployment and their current deployment status.",
+			},
+			{
+				Name:        "status",
 				Type:        proto.ColumnType_STRING,
-				Description: "Namespace the deployment is created in.",
+				Description: "Status of the deployment.",
 			},
 			{
 				Name:        "status_description",
@@ -94,9 +89,14 @@ func tableNomadDeployment(ctx context.Context) *plugin.Table {
 				Description: "Human-readable description of the deployment status.",
 			},
 			{
-				Name:        "task_groups",
-				Type:        proto.ColumnType_JSON,
-				Description: "Set of task groups effected by the deployment and their current deployment status.",
+				Name:        "create_index",
+				Type:        proto.ColumnType_INT,
+				Description: "Create index of the deployment.",
+			},
+			{
+				Name:        "modify_index",
+				Type:        proto.ColumnType_INT,
+				Description: "Modify index of the deployment.",
 			},
 
 			/// Steampipe standard columns
