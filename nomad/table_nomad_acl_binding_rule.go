@@ -17,14 +17,15 @@ func tableNomadACLBindingRule(ctx context.Context) *plugin.Table {
 			Hydrate: listACLBindingRules,
 		},
 		Get: &plugin.GetConfig{
-			KeyColumns: plugin.SingleColumn("name"),
+			KeyColumns: plugin.SingleColumn("id"),
 			Hydrate:    getACLBindingRule,
 		},
 		Columns: []*plugin.Column{
 			{
-				Name:        "name",
+				Name:        "id",
 				Type:        proto.ColumnType_STRING,
-				Description: "The name of the acl_binding_rule.",
+				Description: "An internally generated UUID for this rule and is controlled by Nomad.",
+				Transform:   transform.FromField("ID"),
 			},
 			{
 				Name:        "description",
@@ -32,29 +33,49 @@ func tableNomadACLBindingRule(ctx context.Context) *plugin.Table {
 				Description: "The description of the acl_binding_rule.",
 			},
 			{
-				Name:        "quota",
+				Name:        "auth_method",
 				Type:        proto.ColumnType_STRING,
-				Description: "The quota of the acl_binding_rule.",
+				Description: "The name of the auth method for which this rule applies to.",
 			},
 			{
-				Name:        "capabilities",
-				Type:        proto.ColumnType_JSON,
-				Description: "The capabilities of the acl_binding_rule.",
+				Name:        "selector",
+				Type:        proto.ColumnType_STRING,
+				Description: "An expression that matches against verified identity attributes returned from the auth method during login.",
+				Hydrate:     getACLBindingRule,
 			},
 			{
-				Name:        "meta",
-				Type:        proto.ColumnType_JSON,
-				Description: "The metadata associated with the acl_binding_rule.",
+				Name:        "bind_type",
+				Type:        proto.ColumnType_STRING,
+				Description: "Adjusts how this binding rule is applied at login time.",
+				Hydrate:     getACLBindingRule,
+			},
+			{
+				Name:        "bind_name",
+				Type:        proto.ColumnType_STRING,
+				Description: "BindName is the target of the binding.",
+				Hydrate:     getACLBindingRule,
+			},
+			{
+				Name:        "create_time",
+				Type:        proto.ColumnType_TIMESTAMP,
+				Description: "Create time of the ACL binding rule.",
+				Hydrate:     getACLBindingRule,
+			},
+			{
+				Name:        "modify_time",
+				Type:        proto.ColumnType_TIMESTAMP,
+				Description: "Last modify time of the ACL binding rule.",
+				Hydrate:     getACLBindingRule,
 			},
 			{
 				Name:        "create_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The index when the acl_binding_rule was created.",
+				Description: "Create index of the ACL binding rule.",
 			},
 			{
 				Name:        "modify_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The index when the acl_binding_rule was last modified.",
+				Description: "Modify index of the ACL binding rule.",
 			},
 
 			/// Steampipe standard columns

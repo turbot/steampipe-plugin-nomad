@@ -50,12 +50,6 @@ func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
 				Description: "Default identifies whether this is the default auth-method to use when attempting to login without specifying an auth-method name to use.",
 			},
 			{
-				Name:        "config",
-				Type:        proto.ColumnType_JSON,
-				Description: "Config contains the detailed configuration which is specific to the auth-method.",
-				Hydrate:     getACLAuthMethod,
-			},
-			{
 				Name:        "create_time",
 				Type:        proto.ColumnType_TIMESTAMP,
 				Description: "The creation time of the auth method.",
@@ -76,6 +70,12 @@ func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
 				Name:        "modify_index",
 				Type:        proto.ColumnType_INT,
 				Description: "Modify index of the auth method.",
+			},
+			{
+				Name:        "config",
+				Type:        proto.ColumnType_JSON,
+				Description: "Config contains the detailed configuration which is specific to the auth-method.",
+				Hydrate:     getACLAuthMethod,
 			},
 
 			/// Steampipe standard columns
