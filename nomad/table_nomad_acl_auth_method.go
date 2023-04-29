@@ -44,10 +44,12 @@ func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("MaxTokenTTL").Transform(transform.UnixToTimestamp),
 				Hydrate:     getACLAuthMethod,
 			},
+			// default is a keyword so here transform function has beeen used
 			{
-				Name:        "default",
+				Name:        "default_auth_method",
 				Type:        proto.ColumnType_BOOL,
 				Description: "Default identifies whether this is the default auth-method to use when attempting to login without specifying an auth-method name to use.",
+				Transform:   transform.FromField("Default"),
 			},
 			{
 				Name:        "create_time",
