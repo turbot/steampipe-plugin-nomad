@@ -3,7 +3,6 @@ package nomad
 import (
 	"context"
 
-	"github.com/hashicorp/nomad/api"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
@@ -11,10 +10,10 @@ import (
 
 func tableNomadAgentMember(ctx context.Context) *plugin.Table {
 	return &plugin.Table{
-		Name:        "nomad_agent_member_member",
+		Name:        "nomad_agent_member",
 		Description: "Retrieve information about your agent members.",
 		List: &plugin.ListConfig{
-			Hydrate: listAgents,
+			Hydrate: listAgentMembers,
 		},
 		Columns: []*plugin.Column{
 			{
@@ -26,21 +25,6 @@ func tableNomadAgentMember(ctx context.Context) *plugin.Table {
 				Name:        "status",
 				Type:        proto.ColumnType_STRING,
 				Description: "The current operational status of the agent member.",
-			},
-			{
-				Name:        "server_name",
-				Type:        proto.ColumnType_STRING,
-				Description: "The server name of the agent member.",
-			},
-			{
-				Name:        "server_region",
-				Type:        proto.ColumnType_STRING,
-				Description: "The server region of the agent member.",
-			},
-			{
-				Name:        "server_dc",
-				Type:        proto.ColumnType_STRING,
-				Description: "The server datacenter of the agent member.",
 			},
 			{
 				Name:        "address",
@@ -99,28 +83,21 @@ func tableNomadAgentMember(ctx context.Context) *plugin.Table {
 	}
 }
 
-type Member struct {
-	ServerName   string
-	ServerRegion string
-	ServerDc     string
-	Members      *api.AgentMember
-}
-
-func listAgents(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+func listAgentMembers(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	client, err := getClient(ctx, d)
 	if err != nil {
-		plugin.Logger(ctx).Error("nomad_agent_member.listAgents", "connection_error", err)
+		plugin.Logger(ctx).Error("nomad_agent_member.listAgentMembers", "connection_error", err)
 		return nil, err
 	}
 
 	servers, err := client.Agent().Members()
 	if err != nil {
-		plugin.Logger(ctx).Error("nomad_agent_member.listAgents", "api_error", err)
+		plugin.Logger(ctx).Error("nomad_agent_member.listAgentMembers", "api_error", err)
 		return nil, err
 	}
 
 	for _, member := range servers.Members {
-		d.StreamListItem(ctx, Member{servers.ServerName, servers.ServerRegion, servers.ServerDC, member})
+		d.StreamListItem(ctx, member)
 
 		// Context can be cancelled due to manual cancellation or the limit has been hit
 		if d.RowsRemaining(ctx) == 0 {

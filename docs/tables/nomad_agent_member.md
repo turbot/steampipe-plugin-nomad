@@ -12,7 +12,7 @@ select
   address,
   port,
   status,
-  title
+  protocol_cur
 from
   nomad_agent_member;
 ```
@@ -25,14 +25,14 @@ select
   address,
   port,
   status,
-  title
+  protocol_cur
 from
   nomad_agent_member
 where
   tags ->> 'region' = 'global';
 ```
 
-### List the agents with status 'alive'
+### List agents which are not `alive`
 
 ```sql
 select
@@ -40,23 +40,9 @@ select
   address,
   port,
   status,
-  title
+  protocol_cur
 from
   nomad_agent_member
 where
-  status = 'alive';
-```
-
-### List the current version of the protocol used by the agent member
-
-```sql
-select
-  name,
-  address,
-  port,
-  status,
-  title,
-  protocol_cur as current_protocol_version
-from
-  nomad_agent_member;
+  status <> 'alive';
 ```
