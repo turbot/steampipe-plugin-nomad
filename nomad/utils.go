@@ -11,7 +11,14 @@ func convertJobSubmitTimestamp(_ context.Context, d *transform.TransformData) (i
 	if d.Value == nil {
 		return nil, nil
 	}
-	epochTime := d.Value.(int64)
+	var epochTime int64
+	switch d.Value.(type) {
+	case int64:
+		epochTime = d.Value.(int64)
+	case *int64:
+		epochTime = *d.Value.(*int64)
+	}
+
 	unixtime := epochTime / 1e9
 	unixTimestamp := time.Unix(int64(unixtime), 0)
 	return unixTimestamp, nil
