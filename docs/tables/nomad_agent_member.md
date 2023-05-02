@@ -1,4 +1,4 @@
-# Table: nomad_agent
+# Table: nomad_agent_member
 
 The Nomad agent is a long running process which runs on every machine that is part of the Nomad cluster. The behavior of the agent depends on if it is running in client or server mode. Clients are responsible for running tasks, while servers are responsible for managing the cluster.
 
@@ -14,7 +14,7 @@ select
   status,
   title
 from
-  nomad_agent;
+  nomad_agent_member;
 ```
 
 ### List global agents
@@ -27,7 +27,7 @@ select
   status,
   title
 from
-  nomad_agent
+  nomad_agent_member
 where
   tags ->> 'region' = 'global';
 ```
@@ -42,7 +42,7 @@ select
   status,
   title
 from
-  nomad_agent
+  nomad_agent_member
 where
   status = 'alive';
 ```
@@ -58,5 +58,5 @@ select
   title,
   protocol_cur as current_protocol_version
 from
-  nomad_agent;
+  nomad_agent_member;
 ```

@@ -8,7 +8,7 @@ _What's new?_
   - [nomad_acl_policy](https://hub.steampipe.io/plugins/turbot/nomad/tables/nomad_acl_policy)
   - [nomad_acl_role](https://hub.steampipe.io/plugins/turbot/nomad/tables/nomad_acl_role)
   - [nomad_acl_token](https://hub.steampipe.io/plugins/turbot/nomad/tables/nomad_acl_token)
-  - [nomad_agent](https://hub.steampipe.io/plugins/turbot/nomad/tables/nomad_agent)
+  - [nomad_agent_member](https://hub.steampipe.io/plugins/turbot/nomad/tables/nomad_agent_member)
   - [nomad_deployment](https://hub.steampipe.io/plugins/turbot/nomad/tables/nomad_deployment)
   - [nomad_job](https://hub.steampipe.io/plugins/turbot/nomad/tables/nomad_job)
   - [nomad_namespace](https://hub.steampipe.io/plugins/turbot/nomad/tables/nomad_namespace)

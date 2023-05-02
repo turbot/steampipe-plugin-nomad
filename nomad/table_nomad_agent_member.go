@@ -3,15 +3,16 @@ package nomad
 import (
 	"context"
 
+	"github.com/hashicorp/nomad/api"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
-func tableNomadAgent(ctx context.Context) *plugin.Table {
+func tableNomadAgentMember(ctx context.Context) *plugin.Table {
 	return &plugin.Table{
-		Name:        "nomad_agent",
-		Description: "Retrieve information about your agents.",
+		Name:        "nomad_agent_member_member",
+		Description: "Retrieve information about your agent members.",
 		List: &plugin.ListConfig{
 			Hydrate: listAgents,
 		},
@@ -19,12 +20,27 @@ func tableNomadAgent(ctx context.Context) *plugin.Table {
 			{
 				Name:        "name",
 				Type:        proto.ColumnType_STRING,
-				Description: "The name of the agent.",
+				Description: "The name of the agent member.",
 			},
 			{
 				Name:        "status",
 				Type:        proto.ColumnType_STRING,
 				Description: "The current operational status of the agent member.",
+			},
+			{
+				Name:        "server_name",
+				Type:        proto.ColumnType_STRING,
+				Description: "The server name of the agent member.",
+			},
+			{
+				Name:        "server_region",
+				Type:        proto.ColumnType_STRING,
+				Description: "The server region of the agent member.",
+			},
+			{
+				Name:        "server_dc",
+				Type:        proto.ColumnType_STRING,
+				Description: "The server datacenter of the agent member.",
 			},
 			{
 				Name:        "address",
@@ -75,7 +91,7 @@ func tableNomadAgent(ctx context.Context) *plugin.Table {
 			/// Steampipe standard columns
 			{
 				Name:        "title",
-				Description: "The title of the agent.",
+				Description: "The title of the agent member.",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Name"),
 			},
@@ -83,28 +99,28 @@ func tableNomadAgent(ctx context.Context) *plugin.Table {
 	}
 }
 
+type Member struct {
+	ServerName   string
+	ServerRegion string
+	ServerDc     string
+	Members      *api.AgentMember
+}
+
 func listAgents(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	client, err := getClient(ctx, d)
 	if err != nil {
-		plugin.Logger(ctx).Error("nomad_agent.listAgents", "connection_error", err)
+		plugin.Logger(ctx).Error("nomad_agent_member.listAgents", "connection_error", err)
 		return nil, err
-	}
-
-	maxLimit := int64(1000)
-	if d.QueryContext.Limit != nil {
-		if *d.QueryContext.Limit < maxLimit {
-			maxLimit = *d.QueryContext.Limit
-		}
 	}
 
 	servers, err := client.Agent().Members()
 	if err != nil {
-		plugin.Logger(ctx).Error("nomad_agent.listAgents", "api_error", err)
+		plugin.Logger(ctx).Error("nomad_agent_member.listAgents", "api_error", err)
 		return nil, err
 	}
 
-	for _, server := range servers.Members {
-		d.StreamListItem(ctx, server)
+	for _, member := range servers.Members {
+		d.StreamListItem(ctx, Member{servers.ServerName, servers.ServerRegion, servers.ServerDC, member})
 
 		// Context can be cancelled due to manual cancellation or the limit has been hit
 		if d.RowsRemaining(ctx) == 0 {
