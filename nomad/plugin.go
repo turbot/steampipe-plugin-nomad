@@ -24,6 +24,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"nomad_acl_auth_method":  tableNomadACLAuthMethod(ctx),
 			"nomad_acl_binding_rule": tableNomadACLBindingRule(ctx),
 			"nomad_acl_policy":       tableNomadACLPolicy(ctx),
+			"nomad_acl_role":         tableNomadACLRole(ctx),
 			"nomad_agent":            tableNomadAgent(ctx),
 			"nomad_deployment":       tableNomadDeployment(ctx),
 			"nomad_job":              tableNomadJob(ctx),
@@ -31,7 +32,6 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"nomad_node":             tableNomadNode(ctx),
 			"nomad_plugin":           tableNomadPlugin(ctx),
 			"nomad_volume":           tableNomadVolume(ctx),
-			"nomad_acl_role":         tableNomadACLRole(ctx),
 		},
 	}
 	return p

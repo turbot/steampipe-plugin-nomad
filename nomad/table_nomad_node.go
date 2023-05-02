@@ -24,179 +24,164 @@ func tableNomadNode(ctx context.Context) *plugin.Table {
 			{
 				Name:        "id",
 				Type:        proto.ColumnType_STRING,
-				Description: "The id of the node.",
+				Description: "A string representing the unique identifier of the node.",
 				Transform:   transform.FromField("ID"),
 			},
 			{
 				Name:        "name",
 				Type:        proto.ColumnType_STRING,
-				Description: "The name of the node.",
+				Description: "A string representing the name of the node.",
 			},
 			{
 				Name:        "status",
 				Type:        proto.ColumnType_STRING,
-				Description: "The status of the node.",
+				Description: "A string representing the current status of the node.",
 			},
-			{
-				Name:        "address",
-				Type:        proto.ColumnType_STRING,
-				Description: "The address of the node.",
-			},
-
 			{
 				Name:        "create_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The version of the vault metadata.",
+				Description: "An unsigned 64-bit integer representing the index at which the node was created.",
 			},
 			{
 				Name:        "datacenter",
 				Type:        proto.ColumnType_STRING,
-				Description: "The version of the vault metadata.",
+				Description: "A string specifying the datacenter in which the node is located.",
 			},
 			{
 				Name:        "drain",
 				Type:        proto.ColumnType_BOOL,
-				Description: "The version of the vault metadata.",
+				Description: "A boolean value indicating whether the node is currently being drained.",
 			},
 			{
 				Name:        "modify_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The version of the vault metadata.",
+				Description: "An unsigned 64-bit integer representing the index at which the node was last modified.",
 			},
 			{
 				Name:        "node_class",
 				Type:        proto.ColumnType_STRING,
-				Description: "Date and time when the vault was created.",
+				Description: "A string specifying the class of the node.",
 			},
 			{
 				Name:        "scheduling_eligibility",
 				Type:        proto.ColumnType_STRING,
-				Description: "The version of the vault contents.",
+				Description: "A string specifying the node's scheduling eligibility.",
 			},
 			{
 				Name:        "status_description",
 				Type:        proto.ColumnType_STRING,
-				Description: "The description for the vault.",
-			},
-			{
-				Name:        "version",
-				Type:        proto.ColumnType_STRING,
-				Description: "Number of active items in the vault.",
-			},
-			{
-				Name:        "attributes",
-				Type:        proto.ColumnType_JSON,
-				Description: "The type of vault. Possible values are EVERYONE, PERSONAL and USER_CREATED.",
-			},
-			{
-				Name:        "drivers",
-				Type:        proto.ColumnType_JSON,
-				Description: "Date and time when the vault or its contents were last changed.",
-			},
-			{
-				Name:        "last_drain",
-				Type:        proto.ColumnType_JSON,
-				Description: "Date and time when the vault or its contents were last changed.",
-			},
-			{
-				Name:        "node_resources",
-				Type:        proto.ColumnType_JSON,
-				Description: "Date and time when the vault or its contents were last changed.",
-			},
-			{
-				Name:        "reserved_resources",
-				Type:        proto.ColumnType_JSON,
-				Description: "Date and time when the vault or its contents were last changed.",
+				Description: "A string providing a description of the node's current status.",
 			},
 			{
 				Name:        "http_address",
 				Type:        proto.ColumnType_STRING,
-				Description: "HTTP address for the node",
+				Description: "A string specifying the HTTP address of the node.",
+				Transform:   transform.FromField("HTTPAddr"),
 				Hydrate:     getNode,
 			},
-
 			{
 				Name:        "tls_enabled",
 				Type:        proto.ColumnType_BOOL,
-				Description: "Whether TLS is enabled for the node's HTTP address",
+				Description: "A boolean value indicating whether TLS is enabled for the node.",
+				Transform:   transform.FromField("TLSEnabled"),
 				Hydrate:     getNode,
 			},
-
-			{
-				Name:        "resources",
-				Type:        proto.ColumnType_JSON,
-				Description: "Resources allocated to the node",
-				Hydrate:     getNode,
-			},
-
-			{
-				Name:        "links",
-				Type:        proto.ColumnType_JSON,
-				Description: "Links to other nodes or entities",
-				Hydrate:     getNode,
-			},
-
-			{
-				Name:        "meta",
-				Type:        proto.ColumnType_JSON,
-				Description: "Metadata associated with the node",
-				Hydrate:     getNode,
-			},
-
 			{
 				Name:        "cgroup_parent",
 				Type:        proto.ColumnType_STRING,
-				Description: "The parent cgroup for the node",
+				Description: "A string specifying the parent cgroup for the node.",
 				Hydrate:     getNode,
 			},
-
-			{
-				Name:        "drain_strategy",
-				Type:        proto.ColumnType_JSON,
-				Description: "The strategy used to drain the node",
-				Hydrate:     getNode,
-			},
-
 			{
 				Name:        "status_updated_at",
 				Type:        proto.ColumnType_TIMESTAMP,
-				Description: "The timestamp of the last status update for the node",
+				Description: "An integer representing the timestamp at which the node's status was last updated.",
 				Hydrate:     getNode,
 				Transform:   transform.FromField("StatusUpdatedAt").Transform(transform.UnixToTimestamp),
 			},
-
 			{
 				Name:        "events",
 				Type:        proto.ColumnType_JSON,
-				Description: "Events associated with the node",
+				Description: "A slice of pointers to NodeEvent structs representing events associated with the node.",
 				Hydrate:     getNode,
 			},
-
 			{
 				Name:        "host_volumes",
 				Type:        proto.ColumnType_JSON,
-				Description: "Volumes attached to the node",
+				Description: "A map containing information about the volumes attached to the node.",
 				Hydrate:     getNode,
 			},
-
 			{
 				Name:        "host_networks",
 				Type:        proto.ColumnType_JSON,
-				Description: "Networks attached to the node",
+				Description: "A map containing information about the networks attached to the node.",
 				Hydrate:     getNode,
 			},
-
 			{
 				Name:        "csi_controller_plugins",
 				Type:        proto.ColumnType_JSON,
-				Description: "CSI controller plugins attached to the node",
+				Description: "A map containing information about the CSI controller plugins installed on the node.",
 				Hydrate:     getNode,
 			},
-
 			{
 				Name:        "csi_node_plugins",
 				Type:        proto.ColumnType_JSON,
-				Description: "CSI node plugins attached to the node",
+				Description: "A map containing information about the CSI node plugins installed on the node.",
+				Hydrate:     getNode,
+			},
+			{
+				Name:        "attributes",
+				Type:        proto.ColumnType_JSON,
+				Description: "A map containing user-defined attributes associated with the node.",
+			},
+			{
+				Name:        "drivers",
+				Type:        proto.ColumnType_JSON,
+				Description: "A map containing information about the drivers installed on the node.",
+			},
+			{
+				Name:        "last_drain",
+				Type:        proto.ColumnType_JSON,
+				Description: "A pointer to a DrainMetadata struct representing the metadata for the last drain operation performed on the node.",
+			},
+			{
+				Name:        "node_resources",
+				Type:        proto.ColumnType_JSON,
+				Description: "A pointer to a NodeResources struct representing the resources allocated to the node.",
+			},
+			{
+				Name:        "reserved_resources",
+				Type:        proto.ColumnType_JSON,
+				Description: "A pointer to a NodeReservedResources struct representing the reserved resources on the node.",
+			},
+			{
+				Name:        "resources",
+				Type:        proto.ColumnType_JSON,
+				Description: "A pointer to a Resources struct representing the total resources available on the node.",
+				Hydrate:     getNode,
+			},
+			{
+				Name:        "reserved",
+				Type:        proto.ColumnType_JSON,
+				Description: "A pointer to a Resources struct representing the reserved resources on the node.",
+				Hydrate:     getNode,
+			},
+			{
+				Name:        "links",
+				Type:        proto.ColumnType_JSON,
+				Description: "A map containing links to related resources associated with the node.",
+				Hydrate:     getNode,
+			},
+			{
+				Name:        "meta",
+				Type:        proto.ColumnType_JSON,
+				Description: "A map containing additional metadata associated with the node.",
+				Hydrate:     getNode,
+			},
+			{
+				Name:        "drain_strategy",
+				Type:        proto.ColumnType_JSON,
+				Description: "A pointer to a DrainStrategy struct representing the strategy used for draining the node.",
 				Hydrate:     getNode,
 			},
 

@@ -24,37 +24,35 @@ func tableNomadACLPolicy(ctx context.Context) *plugin.Table {
 			{
 				Name:        "name",
 				Type:        proto.ColumnType_STRING,
-				Description: "The name of the acl_policy.",
+				Description: "The name of the acl policy.",
 			},
 			{
 				Name:        "description",
 				Type:        proto.ColumnType_STRING,
-				Description: "The description of the acl_policy.",
+				Description: "The description of the acl policy.",
 			},
 			{
-				Name:        "quota",
+				Name:        "rules",
 				Type:        proto.ColumnType_STRING,
-				Description: "The quota of the acl_policy.",
-			},
-			{
-				Name:        "capabilities",
-				Type:        proto.ColumnType_JSON,
-				Description: "The capabilities of the acl_policy.",
-			},
-			{
-				Name:        "meta",
-				Type:        proto.ColumnType_JSON,
-				Description: "The metadata associated with the acl_policy.",
+				Description: "The set of rules of the acl policy.",
+				Hydrate:     getACLPolicy,
 			},
 			{
 				Name:        "create_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The index when the acl_policy was created.",
+				Description: "The index when the acl policy was created.",
 			},
 			{
 				Name:        "modify_index",
 				Type:        proto.ColumnType_INT,
-				Description: "The index when the acl_policy was last modified.",
+				Description: "The index when the acl policy was last modified.",
+			},
+			{
+				Name:        "job_acl",
+				Type:        proto.ColumnType_JSON,
+				Description: "The capabilities of the acl_policy.",
+				Transform:   transform.FromField("JobACL"),
+				Hydrate:     getACLPolicy,
 			},
 
 			/// Steampipe standard columns

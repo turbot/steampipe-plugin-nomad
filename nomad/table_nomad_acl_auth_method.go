@@ -44,16 +44,12 @@ func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("MaxTokenTTL").Transform(transform.UnixToTimestamp),
 				Hydrate:     getACLAuthMethod,
 			},
+			// default is a keyword so here transform function has beeen used
 			{
-				Name:        "default",
+				Name:        "default_auth_method",
 				Type:        proto.ColumnType_BOOL,
 				Description: "Default identifies whether this is the default auth-method to use when attempting to login without specifying an auth-method name to use.",
-			},
-			{
-				Name:        "config",
-				Type:        proto.ColumnType_JSON,
-				Description: "Config contains the detailed configuration which is specific to the auth-method.",
-				Hydrate:     getACLAuthMethod,
+				Transform:   transform.FromField("Default"),
 			},
 			{
 				Name:        "create_time",
@@ -76,6 +72,12 @@ func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
 				Name:        "modify_index",
 				Type:        proto.ColumnType_INT,
 				Description: "Modify index of the auth method.",
+			},
+			{
+				Name:        "config",
+				Type:        proto.ColumnType_JSON,
+				Description: "Config contains the detailed configuration which is specific to the auth-method.",
+				Hydrate:     getACLAuthMethod,
 			},
 
 			/// Steampipe standard columns
