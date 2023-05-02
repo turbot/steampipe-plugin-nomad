@@ -126,7 +126,7 @@ func tableNomadJob(ctx context.Context) *plugin.Table {
 				Name:        "submit_time",
 				Description: "The time when the job was submitted",
 				Type:        proto.ColumnType_TIMESTAMP,
-				Transform:   transform.FromField("SubmitTime").Transform(convertJobSubmitTimestamp),
+				Transform:   transform.FromField("SubmitTime").Transform(convertNanoSecToTimestamp),
 			},
 			{
 				Name:        "type",

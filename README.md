@@ -2,7 +2,7 @@
 
 # Nomad Plugin for Steampipe
 
-Use SQL to query nodes, jobs, servers and more from Nomad.
+Use SQL to query nodes, jobs, deployments and more from Nomad.
 
 - **[Get started →](https://hub.steampipe.io/plugins/turbot/nomad)**
 - Documentation: [Table definitions & examples](https://hub.steampipe.io/plugins/turbot/nomad/tables)
@@ -23,26 +23,30 @@ Configure your [credentials](https://hub.steampipe.io/plugins/turbot/nomad#crede
 
 Configure your account details in `~/.steampipe/config/nomad.spc`:
 
-You may specify the Address to authenticate:
+You may specify the Address and Namespace to authenticate:
 
 - `address`: The address of the nomad server.
+- `namespace`: The Nomad Cluster namespace.
 
 ```hcl
 connection "nomad" {
-  plugin = "nomad"
-  address  = "http://18.118.144.168:4646"
+  plugin    = "nomad"
+  address   = "http://18.118.144.168:4646"
+  namespace = "*"
 }
 ```
 
-or you may specify the Address and SecretID to authenticate:
+or you may specify the Address, Namespace and SecretID to authenticate:
 
 - `address`: The address of the nomad server.
+- `namespace`: The Nomad Cluster namespace.
 - `secret_id`: The SecretID of an ACL token to use to authenticate API requests with.
 
 ```hcl
 connection "nomad" {
-  plugin = "nomad"
-  address  = "http://18.118.144.168:4646"
+  plugin    = "nomad"
+  address   = "http://18.118.144.168:4646"
+  namespace = "*"
   secret_id = "c178b810-8b18-6f38-016f-725ddec5d58"
 }
 ```
@@ -51,6 +55,7 @@ or through environment variables
 
 ```sh
 export NOMAD_ADDR="http://18.118.144.168:4646"
+export NOMAD_NAMESPACE="*"
 export NOMAD_TOKEN="c178b810-8b18-6f38-016f-725ddec5d58"
 ```
 

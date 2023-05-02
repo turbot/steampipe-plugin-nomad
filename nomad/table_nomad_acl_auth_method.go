@@ -39,12 +39,12 @@ func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
 			},
 			{
 				Name:        "max_token_ttl",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Description: "The maximum life of a token created by this method.",
-				Transform:   transform.FromField("MaxTokenTTL").Transform(transform.UnixToTimestamp),
+				Transform:   transform.FromField("MaxTokenTTL"),
 				Hydrate:     getACLAuthMethod,
 			},
-			// default is a keyword so here transform function has beeen used
+			// default is a keyword so here transform function has been used
 			{
 				Name:        "default_auth_method",
 				Type:        proto.ColumnType_BOOL,

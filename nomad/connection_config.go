@@ -39,7 +39,9 @@ func GetConfig(connection *plugin.Connection) nomadConfig {
 func getClient(ctx context.Context, d *plugin.QueryData) (*api.Client, error) {
 	nomadConfig := GetConfig(d.Connection)
 
+	namespace := "*"
 	address := os.Getenv("NOMAD_ADDR")
+	namespace = os.Getenv("NOMAD_NAMESPACE")
 	secretId := os.Getenv("NOMAD_TOKEN")
 
 	if nomadConfig.Address != nil {
@@ -53,6 +55,7 @@ func getClient(ctx context.Context, d *plugin.QueryData) (*api.Client, error) {
 		con := api.DefaultConfig()
 		con.Address = address
 		con.SecretID = secretId
+		con.Namespace = namespace
 		client, _ := api.NewClient(con)
 		return client, nil
 	}

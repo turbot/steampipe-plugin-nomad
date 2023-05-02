@@ -7,7 +7,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
-func convertJobSubmitTimestamp(_ context.Context, d *transform.TransformData) (interface{}, error) {
+func convertNanoSecToTimestamp(_ context.Context, d *transform.TransformData) (interface{}, error) {
 	if d.Value == nil {
 		return nil, nil
 	}
