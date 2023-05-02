@@ -24,13 +24,13 @@ func tableNomadACLToken(ctx context.Context) *plugin.Table {
 			{
 				Name:        "accessor_id",
 				Type:        proto.ColumnType_STRING,
-				Description: "The AccessorID of the acl token.",
+				Description: "The accessor ID of the acl token.",
 				Transform:   transform.FromField("AccessorID"),
 			},
 			{
 				Name:        "secret_id",
 				Type:        proto.ColumnType_STRING,
-				Description: "The SecretID of the acl token.",
+				Description: "The secret ID of the acl token.",
 				Transform:   transform.FromField("SecretID"),
 				Hydrate:     getACLToken,
 			},
@@ -116,15 +116,10 @@ func listACLTokens(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDa
 		PerPage: int32(maxLimit),
 	}
 
-	// Add support for optional region qual
-	if d.EqualsQuals["datacenter"] != nil {
-		input.Region = d.EqualsQuals["datacenter"].GetStringValue()
-	}
-
 	for {
 		tokens, metadata, err := client.ACLTokens().List(input)
 		if err != nil {
-			plugin.Logger(ctx).Error("nomad_acl_token.listACLTokens", "query_error", err)
+			plugin.Logger(ctx).Error("nomad_acl_token.listACLTokens", "api_error", err)
 			return nil, err
 		}
 

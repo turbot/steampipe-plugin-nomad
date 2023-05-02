@@ -58,7 +58,7 @@ steampipe plugin install nomad
 | Item        | Description                                                                                                                                                                              |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Credentials | Nomad requires an Address and Namespace or Address, Namespace and [Secret ID](https://developer.hashicorp.com/nomad/tutorials/access-control/access-control-tokens) for all requests.    |
-| Permissions | The permission scope of Secret IDs is set by the Admin at the creation time.                                                                                                             |
+| Permissions | The permission scope of Secret IDs is set by the Admin at the creation time of the ACL tokens.                                                                                           |
 | Radius      | Each connection represents a single Nomad Installation.                                                                                                                                  |
 | Resolution  | 1. Credentials explicitly set in a steampipe config file (`~/.steampipe/config/nomad.spc`)<br />2. Credentials specified in environment variables, e.g., `NOMAD_ADDR` and `NOMAD_TOKEN`. |
 
@@ -79,7 +79,7 @@ connection "nomad" {
   # `namespace` - The Nomad cluster namespace.
   # For more information on the Namespace, please see https://developer.hashicorp.com/nomad/tutorials/manage-clusters/namespaces.
   # Can also be set with the NOMAD_NAMESPACE environment variable.
-  # By default, the plugin will query all the namespaces.
+  # "*" indicates all the namespaces available.
   namespace = "*"
 
   # `secret_id` - The SecretID of an ACL token.
@@ -109,7 +109,7 @@ or you may specify the Address, Namespace and SecretID to authenticate:
 
 - `address`: The address of the nomad server.
 - `namespace`: The Nomad Cluster namespace.
-- `secret_id`: The SecretID of an ACL token to use to authenticate API requests with.
+- `secret_id`: The SecretID of an ACL token.
 
 ```hcl
 connection "nomad" {

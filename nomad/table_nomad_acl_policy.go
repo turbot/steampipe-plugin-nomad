@@ -50,7 +50,7 @@ func tableNomadACLPolicy(ctx context.Context) *plugin.Table {
 			{
 				Name:        "job_acl",
 				Type:        proto.ColumnType_JSON,
-				Description: "The capabilities of the acl_policy.",
+				Description: "The capabilities of the acl policy.",
 				Transform:   transform.FromField("JobACL"),
 				Hydrate:     getACLPolicy,
 			},
@@ -58,7 +58,7 @@ func tableNomadACLPolicy(ctx context.Context) *plugin.Table {
 			/// Steampipe standard columns
 			{
 				Name:        "title",
-				Description: "The title of the acl_policy.",
+				Description: "The title of the acl policy.",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Name"),
 			},
@@ -84,15 +84,10 @@ func listACLPolicies(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 		PerPage: int32(maxLimit),
 	}
 
-	// Add support for optional region qual
-	if d.EqualsQuals["datacenter"] != nil {
-		input.Region = d.EqualsQuals["datacenter"].GetStringValue()
-	}
-
 	for {
 		policies, metadata, err := client.ACLPolicies().List(input)
 		if err != nil {
-			plugin.Logger(ctx).Error("nomad_acl_policy.listACLPolicies", "query_error", err)
+			plugin.Logger(ctx).Error("nomad_acl_policy.listACLPolicies", "api_error", err)
 			return nil, err
 		}
 

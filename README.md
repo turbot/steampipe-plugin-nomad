@@ -40,7 +40,7 @@ or you may specify the Address, Namespace and SecretID to authenticate:
 
 - `address`: The address of the nomad server.
 - `namespace`: The Nomad Cluster namespace.
-- `secret_id`: The SecretID of an ACL token to use to authenticate API requests with.
+- `secret_id`: The SecretID of an ACL token.
 
 ```hcl
 connection "nomad" {

@@ -15,6 +15,12 @@ func tableNomadJob(ctx context.Context) *plugin.Table {
 		Description: "Retrieve information about your jobs.",
 		List: &plugin.ListConfig{
 			Hydrate: listJobs,
+			KeyColumns: []*plugin.KeyColumn{
+				{
+					Name:    "namespace",
+					Require: plugin.Optional,
+				},
+			},
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
@@ -24,7 +30,7 @@ func tableNomadJob(ctx context.Context) *plugin.Table {
 			{
 				Name:        "id",
 				Type:        proto.ColumnType_STRING,
-				Description: "Generated UUID for the deployment.",
+				Description: "Generated UUID for the job.",
 				Transform:   transform.FromField("ID"),
 			},
 			{
@@ -34,7 +40,7 @@ func tableNomadJob(ctx context.Context) *plugin.Table {
 			},
 			{
 				Name:        "status",
-				Description: "The status of the job",
+				Description: "The status of the job.",
 				Type:        proto.ColumnType_STRING,
 			},
 			{
@@ -44,31 +50,31 @@ func tableNomadJob(ctx context.Context) *plugin.Table {
 			},
 			{
 				Name:        "consul_namespace",
-				Description: "The Consul namespace used by the job",
+				Description: "The Consul namespace used by the job.",
 				Type:        proto.ColumnType_STRING,
 				Hydrate:     getJob,
 			},
 			{
 				Name:        "consul_token",
-				Description: "Consul token used by the job",
+				Description: "Consul token used by the job.",
 				Type:        proto.ColumnType_STRING,
 				Hydrate:     getJob,
 			},
 			{
 				Name:        "create_index",
-				Description: "Create index of the job",
+				Description: "Create index of the job.",
 				Type:        proto.ColumnType_INT,
 				Hydrate:     getJob,
 			},
 			{
 				Name:        "dispatch_idempotency_token",
-				Description: "The dispatch idempotency token used by the job",
+				Description: "The dispatch idempotency token used by the job.",
 				Type:        proto.ColumnType_STRING,
 				Hydrate:     getJob,
 			},
 			{
 				Name:        "dispatched",
-				Description: "Indicates whether the job has been dispatched",
+				Description: "Indicates whether the job has been dispatched.",
 				Type:        proto.ColumnType_BOOL,
 				Hydrate:     getJob,
 			},
@@ -91,7 +97,7 @@ func tableNomadJob(ctx context.Context) *plugin.Table {
 			},
 			{
 				Name:        "parent_id",
-				Description: "The parent ID of the job",
+				Description: "The parent ID of the job.",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("ParentID"),
 			},
@@ -108,23 +114,23 @@ func tableNomadJob(ctx context.Context) *plugin.Table {
 			},
 			{
 				Name:        "stable",
-				Description: "Indicates whether the job is stable",
+				Description: "Indicates whether the job is stable.",
 				Type:        proto.ColumnType_BOOL,
 				Hydrate:     getJob,
 			},
 			{
 				Name:        "status_description",
-				Description: "The description of the status of the job",
+				Description: "The description of the status of the job.",
 				Type:        proto.ColumnType_STRING,
 			},
 			{
 				Name:        "stop",
-				Description: "Indicates whether the job should be stopped",
+				Description: "Indicates whether the job should be stopped.",
 				Type:        proto.ColumnType_BOOL,
 			},
 			{
 				Name:        "submit_time",
-				Description: "The time when the job was submitted",
+				Description: "The time when the job was submitted.",
 				Type:        proto.ColumnType_TIMESTAMP,
 				Transform:   transform.FromField("SubmitTime").Transform(convertNanoSecToTimestamp),
 			},
@@ -135,19 +141,19 @@ func tableNomadJob(ctx context.Context) *plugin.Table {
 			},
 			{
 				Name:        "vault_namespace",
-				Description: "The Vault namespace used by the job",
+				Description: "The vault namespace used by the job.",
 				Type:        proto.ColumnType_STRING,
 				Hydrate:     getJob,
 			},
 			{
 				Name:        "vault_token",
-				Description: "Vault token used by the job",
+				Description: "Vault token used by the job.",
 				Type:        proto.ColumnType_STRING,
 				Hydrate:     getJob,
 			},
 			{
 				Name:        "version",
-				Description: "The version of the job",
+				Description: "The version of the job.",
 				Type:        proto.ColumnType_INT,
 				Hydrate:     getJob,
 			},
@@ -176,7 +182,7 @@ func tableNomadJob(ctx context.Context) *plugin.Table {
 			},
 			{
 				Name:        "meta",
-				Description: "Metadata associated with the job",
+				Description: "Metadata associated with the job.",
 				Type:        proto.ColumnType_JSON,
 			},
 			{
@@ -192,7 +198,7 @@ func tableNomadJob(ctx context.Context) *plugin.Table {
 			},
 			{
 				Name:        "payload",
-				Description: "The payload of the job",
+				Description: "The payload of the job.",
 				Type:        proto.ColumnType_JSON,
 				Hydrate:     getJob,
 			},
@@ -255,15 +261,14 @@ func listJobs(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (
 		PerPage: int32(maxLimit),
 	}
 
-	// Add support for optional region qual
-	if d.EqualsQuals["datacenter"] != nil {
-		input.Region = d.EqualsQuals["datacenter"].GetStringValue()
+	if d.EqualsQuals["namespace"] != nil {
+		input.Namespace = d.EqualsQualString("namespace")
 	}
 
 	for {
 		jobs, metadata, err := client.Jobs().List(input)
 		if err != nil {
-			plugin.Logger(ctx).Error("nomad_job.listJobs", "query_error", err)
+			plugin.Logger(ctx).Error("nomad_job.listJobs", "api_error", err)
 			return nil, err
 		}
 

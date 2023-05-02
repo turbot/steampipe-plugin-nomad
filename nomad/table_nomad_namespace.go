@@ -94,7 +94,7 @@ func listNamespaces(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateD
 	for {
 		namespaces, metadata, err := client.Namespaces().List(input)
 		if err != nil {
-			plugin.Logger(ctx).Error("nomad_namespace.listNamespaces", "query_error", err)
+			plugin.Logger(ctx).Error("nomad_namespace.listNamespaces", "api_error", err)
 			return nil, err
 		}
 

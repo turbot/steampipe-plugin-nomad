@@ -99,7 +99,7 @@ func listAgents(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 
 	servers, err := client.Agent().Members()
 	if err != nil {
-		plugin.Logger(ctx).Error("nomad_agent.listAgents", "query_error", err)
+		plugin.Logger(ctx).Error("nomad_agent.listAgents", "api_error", err)
 		return nil, err
 	}
 

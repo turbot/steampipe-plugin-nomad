@@ -8,7 +8,7 @@ connection "nomad" {
   # `namespace` - The Nomad cluster namespace.
   # For more information on the Namespace, please see https://developer.hashicorp.com/nomad/tutorials/manage-clusters/namespaces.
   # Can also be set with the NOMAD_NAMESPACE environment variable.
-  # By default, the plugin will query all the namespaces.
+  # "*" indicates all the namespaces available.
   namespace = "*"
 
   # `secret_id` - The SecretID of an ACL token.

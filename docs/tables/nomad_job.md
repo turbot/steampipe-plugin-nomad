@@ -1,6 +1,6 @@
 # Table: nomad_job
 
-The Nomad job specification (or "jobspec" for short) defines the schema for Nomad jobs. Nomad jobs are specified in HCL, which aims to strike a balance between human readable and editable, and machine-friendly.
+A Job is a specification provided by users that declares a workload for Nomad. A Job is a form of desired state; the user is expressing that the job should be running, but not where it should be run. The responsibility of Nomad is to make sure the actual state matches the user desired state. A Job is composed of one or more task groups.
 
 ## Examples
 
@@ -15,13 +15,12 @@ select
   type,
   region,
   modify_index,
-  submit_time,
-  title
+  submit_time
 from
   nomad_job;
 ```
 
-### List all the stable jobs
+### List unstable jobs
 
 ```sql
 select
@@ -30,16 +29,14 @@ select
   namespace,
   status,
   type,
-  region,
-  modify_index,
-  title
+  region
 from
   nomad_job
 where
-  stable;
+  not stable;
 ```
 
-### List the multiregion jobs
+### List multi region jobs
 
 ```sql
 select
@@ -47,17 +44,15 @@ select
   name,
   namespace,
   status,
-  type,
   region,
-  modify_index,
-  title
+  multiregion
 from
   nomad_job
 where
   multiregion is not null;
 ```
 
-### List the jobs with autorevert enabled
+### List pending jobs
 
 ```sql
 select
@@ -65,10 +60,22 @@ select
   name,
   namespace,
   status,
-  type,
   region,
-  modify_index,
-  title,
+  multiregion
+from
+  nomad_job
+where
+  status = 'pending';
+```
+
+### List the jobs with `autorevert` enabled
+
+```sql
+select
+  id,
+  name,
+  namespace,
+  status,
   update ->> 'AutoRevert' as auto_revert
 from
   nomad_job
@@ -76,17 +83,17 @@ where
   update ->> 'AutoRevert' = 'true';
 ```
 
-### Describe the CSI plugfin configuration for the job
+### Show the CSI plugin configuration for the jobs
 
 ```sql
 select
   id as job_id,
   name as job_name,
-  t -> 'CSIPluginConfig' -> 'ID' as csi_plugin_id,
-  t -> 'CSIPluginConfig' -> 'Type' as csi_plugin_type,
-  t -> 'CSIPluginConfig' -> 'HealthTimeout' as csi_plugin_timeout
+  t -> 'CSIPluginConfig' ->> 'ID' as csi_plugin_id,
+  t -> 'CSIPluginConfig' ->> 'Type' as csi_plugin_type,
+  t -> 'CSIPluginConfig' ->> 'HealthTimeout' as csi_plugin_timeout
 from
   nomad_job,
   jsonb_array_elements(task_groups) as tg,
-  jsonb_array_elements(tg -> 'Tasks') as t
+  jsonb_array_elements(tg -> 'Tasks') as t;
 ```

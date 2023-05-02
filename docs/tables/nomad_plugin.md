@@ -1,6 +1,6 @@
 # Table: nomad_plugin
 
-CSI is the container storage interface. It is a plugin for Kubernetes and other container orchestrators that allows storage suppliers to expose their products to containerised applications as persistent storage.
+Nomad CSI (Container Storage Interface) plugin is a plugin architecture for integrating container orchestration systems like Nomad with different storage providers. CSI allows for the abstraction of storage vendors, creating a standard interface for container orchestration systems to manage storage resources across various infrastructure providers.
 
 ## Examples
 
@@ -9,7 +9,7 @@ CSI is the container storage interface. It is a plugin for Kubernetes and other 
 ```sql
 select
   id,
-  title,
+  controller_required,
   version,
   create_index,
   modify_index,
@@ -18,7 +18,7 @@ from
   nomad_plugin;
 ```
 
-### List the CSI plugins that require a controller
+### List CSI plugins that require a controller
 
 ```sql
 select
@@ -34,40 +34,26 @@ where
   controller_rquired;
 ```
 
-### Find the number of nodes and controllers associated with each CSI plugin
+### Show the number of nodes and controllers associated with each plugin
 
 ```sql
 select
   id,
-  title,
+  version,
   nodes_healthy,
   controllers_healthy
 from
-  csi_plugins;
+  nomad_plugin;
 ```
 
-### Find the total number of expected and healthy nodes for each CSI plugin
+### Show the number of expected nodes for each plugin
 
 ```sql
 select
   id,
-  title,
+  version,
   nodes_healthy,
   nodes_expected
 from
-  csi_plugins;
-```
-
-### Find the plugin with the highest number of expected nodes
-
-```sql
-select
-  id,
-  title,
-  nodes_healthy,
-  nodes_expected
-from
-  csi_plugins
-order by
-  nodes_expected desc limit 1;
+  nomad_plugin;
 ```

@@ -30,7 +30,7 @@ func tableNomadACLBindingRule(ctx context.Context) *plugin.Table {
 			{
 				Name:        "description",
 				Type:        proto.ColumnType_STRING,
-				Description: "The description of the acl_binding_rule.",
+				Description: "The description of the acl binding rule.",
 			},
 			{
 				Name:        "auth_method",
@@ -46,13 +46,13 @@ func tableNomadACLBindingRule(ctx context.Context) *plugin.Table {
 			{
 				Name:        "bind_type",
 				Type:        proto.ColumnType_STRING,
-				Description: "Adjusts how this binding rule is applied at login time.",
+				Description: "The binding type of the ACL binding rule.",
 				Hydrate:     getACLBindingRule,
 			},
 			{
 				Name:        "bind_name",
 				Type:        proto.ColumnType_STRING,
-				Description: "BindName is the target of the binding.",
+				Description: "The binding name of the ACL binding rule.",
 				Hydrate:     getACLBindingRule,
 			},
 			{
@@ -81,9 +81,9 @@ func tableNomadACLBindingRule(ctx context.Context) *plugin.Table {
 			/// Steampipe standard columns
 			{
 				Name:        "title",
-				Description: "The title of the acl_binding_rule.",
+				Description: "The title of the acl binding rule.",
 				Type:        proto.ColumnType_STRING,
-				Transform:   transform.FromField("Name"),
+				Transform:   transform.FromField("ID"),
 			},
 		},
 	}
@@ -107,15 +107,10 @@ func listACLBindingRules(ctx context.Context, d *plugin.QueryData, _ *plugin.Hyd
 		PerPage: int32(maxLimit),
 	}
 
-	// Add support for optional region qual
-	if d.EqualsQuals["datacenter"] != nil {
-		input.Region = d.EqualsQuals["datacenter"].GetStringValue()
-	}
-
 	for {
 		bindingRules, metadata, err := client.ACLBindingRules().List(input)
 		if err != nil {
-			plugin.Logger(ctx).Error("nomad_acl_binding_rule.listACLBindingRules", "query_error", err)
+			plugin.Logger(ctx).Error("nomad_acl_binding_rule.listACLBindingRules", "api_error", err)
 			return nil, err
 		}
 

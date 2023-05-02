@@ -38,7 +38,7 @@ func tableNomadPlugin(ctx context.Context) *plugin.Table {
 				Hydrate:     getPlugin,
 			},
 			{
-				Name:        "controller_rquired",
+				Name:        "controller_required",
 				Type:        proto.ColumnType_BOOL,
 				Description: "A boolean indicating whether the CSI plugin requires a controller.",
 			},
@@ -96,7 +96,7 @@ func tableNomadPlugin(ctx context.Context) *plugin.Table {
 				Name:        "title",
 				Description: "The title of the plugin.",
 				Type:        proto.ColumnType_STRING,
-				Transform:   transform.FromField("Name"),
+				Transform:   transform.FromField("ID"),
 			},
 		},
 	}
@@ -120,15 +120,10 @@ func listPlugins(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		PerPage: int32(maxLimit),
 	}
 
-	// Add support for optional region qual
-	if d.EqualsQuals["datacenter"] != nil {
-		input.Region = d.EqualsQuals["datacenter"].GetStringValue()
-	}
-
 	for {
 		plugins, metadata, err := client.CSIPlugins().List(input)
 		if err != nil {
-			plugin.Logger(ctx).Error("nomad_plugin.listPlugins", "query_error", err)
+			plugin.Logger(ctx).Error("nomad_plugin.listPlugins", "api_error", err)
 			return nil, err
 		}
 

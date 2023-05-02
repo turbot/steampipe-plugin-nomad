@@ -11,12 +11,16 @@ import (
 )
 
 type nomadConfig struct {
-	Address  *string `cty:"address"`
-	SecretID *string `cty:"secret_id"`
+	Address   *string `cty:"address"`
+	Namespace *string `cty:"namespace"`
+	SecretID  *string `cty:"secret_id"`
 }
 
 var ConfigSchema = map[string]*schema.Attribute{
 	"address": {
+		Type: schema.TypeString,
+	},
+	"namespace": {
 		Type: schema.TypeString,
 	},
 	"secret_id": {
@@ -39,9 +43,8 @@ func GetConfig(connection *plugin.Connection) nomadConfig {
 func getClient(ctx context.Context, d *plugin.QueryData) (*api.Client, error) {
 	nomadConfig := GetConfig(d.Connection)
 
-	namespace := "*"
 	address := os.Getenv("NOMAD_ADDR")
-	namespace = os.Getenv("NOMAD_NAMESPACE")
+	namespace := os.Getenv("NOMAD_NAMESPACE")
 	secretId := os.Getenv("NOMAD_TOKEN")
 
 	if nomadConfig.Address != nil {
@@ -49,6 +52,9 @@ func getClient(ctx context.Context, d *plugin.QueryData) (*api.Client, error) {
 	}
 	if nomadConfig.SecretID != nil {
 		secretId = *nomadConfig.SecretID
+	}
+	if nomadConfig.Namespace != nil {
+		namespace = *nomadConfig.Namespace
 	}
 
 	if address != "" {
@@ -60,5 +66,5 @@ func getClient(ctx context.Context, d *plugin.QueryData) (*api.Client, error) {
 		return client, nil
 	}
 
-	return nil, errors.New("'token' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe.")
+	return nil, errors.New("'address' or ('address' and 'secret_id') must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe.")
 }

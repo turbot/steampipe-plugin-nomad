@@ -1,6 +1,6 @@
-# Table: nomad_acl_auth_method
+# Table: nomad_acl_binding_rule
 
-Binding rules provide a mapping between a Nomad user's SSO authorisation claims and internal Nomad objects such as ACL Roles and ACL Policies. A binding rule is directly related to a single auth method, and therefore only evaluated by login attempts using that method. All binding rules mapped to an auth method are evaluated during each login attempt.
+Binding rules provide a mapping between a Nomad user's SSO authorization claims and internal Nomad objects such as ACL Roles and ACL Policies. A binding rule is directly related to a single auth method, and therefore only evaluated by login attempts using that method. All binding rules mapped to an auth method are evaluated during each login attempt.
 
 ## Examples
 
@@ -9,7 +9,6 @@ Binding rules provide a mapping between a Nomad user's SSO authorisation claims 
 ```sql
 select
   id,
-  title,
   auth_method,
   bind_name,
   bind_type,
@@ -19,12 +18,27 @@ from
   nomad_acl_binding_rule;
 ```
 
-### List the binding rules created in the last 30 days
+### List role type binding rules
 
 ```sql
 select
   id,
-  title,
+  auth_method,
+  bind_name,
+  bind_type,
+  create_time,
+  create_index
+from
+  nomad_acl_binding_rule
+where
+  bind_type = 'role';
+```
+
+### List binding rules created in the last 30 days
+
+```sql
+select
+  id,
   auth_method,
   bind_name,
   bind_type,
@@ -35,23 +49,7 @@ where
   create_time >= now() - interval '30' day;
 ```
 
-### List of binding rules which haven't been modified in the last 30 days
-
-```sql
-select
-  id,
-  title,
-  auth_method,
-  bind_name,
-  bind_type,
-  modify_time
-from
-  nomad_acl_binding_rule
-where
-  modify_time <= now() - interval '30' day;
-```
-
-### Describe the auth methods related to the binding rule
+### Show auth methods related to the binding rule
 
 ```sql
 select
@@ -62,5 +60,7 @@ select
   b.bind_type as bind_type
 from
   nomad_acl_binding_rule as b
-  left join nomad_acl_auth_method as a on b.auth_method = a.name;
+  left join
+    nomad_acl_auth_method as a
+    on b.auth_method = a.name;
 ```

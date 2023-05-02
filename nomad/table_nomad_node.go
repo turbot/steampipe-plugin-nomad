@@ -102,7 +102,7 @@ func tableNomadNode(ctx context.Context) *plugin.Table {
 			{
 				Name:        "events",
 				Type:        proto.ColumnType_JSON,
-				Description: "A slice of pointers to NodeEvent structs representing events associated with the node.",
+				Description: "Represents events associated with the node.",
 				Hydrate:     getNode,
 			},
 			{
@@ -142,28 +142,28 @@ func tableNomadNode(ctx context.Context) *plugin.Table {
 			{
 				Name:        "last_drain",
 				Type:        proto.ColumnType_JSON,
-				Description: "A pointer to a DrainMetadata struct representing the metadata for the last drain operation performed on the node.",
+				Description: "Represents the metadata for the last drain operation performed on the node.",
 			},
 			{
 				Name:        "node_resources",
 				Type:        proto.ColumnType_JSON,
-				Description: "A pointer to a NodeResources struct representing the resources allocated to the node.",
+				Description: "Represents the resources allocated to the node.",
 			},
 			{
 				Name:        "reserved_resources",
 				Type:        proto.ColumnType_JSON,
-				Description: "A pointer to a NodeReservedResources struct representing the reserved resources on the node.",
+				Description: "Represents the reserved resources on the node.",
 			},
 			{
 				Name:        "resources",
 				Type:        proto.ColumnType_JSON,
-				Description: "A pointer to a Resources struct representing the total resources available on the node.",
+				Description: "Represents the total resources available on the node.",
 				Hydrate:     getNode,
 			},
 			{
 				Name:        "reserved",
 				Type:        proto.ColumnType_JSON,
-				Description: "A pointer to a Resources struct representing the reserved resources on the node.",
+				Description: "Represents the reserved resources on the node.",
 				Hydrate:     getNode,
 			},
 			{
@@ -181,7 +181,7 @@ func tableNomadNode(ctx context.Context) *plugin.Table {
 			{
 				Name:        "drain_strategy",
 				Type:        proto.ColumnType_JSON,
-				Description: "A pointer to a DrainStrategy struct representing the strategy used for draining the node.",
+				Description: "Represents the strategy used for draining the node.",
 				Hydrate:     getNode,
 			},
 
@@ -214,14 +214,10 @@ func listNodes(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 		PerPage: int32(maxLimit),
 	}
 
-	if d.EqualsQuals["datacenter"] != nil {
-		input.Region = d.EqualsQuals["datacenter"].GetStringValue()
-	}
-
 	for {
 		nodes, metadata, err := client.Nodes().List(input)
 		if err != nil {
-			plugin.Logger(ctx).Error("nomad_node.listNodes", "query_error", err)
+			plugin.Logger(ctx).Error("nomad_node.listNodes", "api_error", err)
 			return nil, err
 		}
 

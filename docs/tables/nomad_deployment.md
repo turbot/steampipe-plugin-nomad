@@ -1,6 +1,6 @@
 # Table: nomad_deployment
 
-Nomad deployment refers to the practice of deploying software applications or services in a way that allows them to be easily moved between different computing environments, such as on-premises data centers and public or private clouds, without requiring significant changes to the application or its infrastructure.
+Deployments are the mechanism by which Nomad rolls out changes to cluster state in a step-by-step fashion. Deployments are only available for Jobs with the type service. When an Evaluation is processed, the scheduler creates only the number of Allocations permitted by the update block and the current state of the cluster. The Deployment is used to monitor the health of those Allocations and emit a new Evaluation for the next step of the update.
 
 ## Examples
 
@@ -12,27 +12,13 @@ select
   namespace,
   status,
   is_multiregion,
-  title
-from
-  nomad_deployment;
-```
-
-### Describe the job the deployment is created for
-
-```sql
-select
-  id as deployment_id,
-  namespace,
   job_id,
-  job_create_index,
-  job_modify_index,
-  job_spec_modify_index,
   job_version
 from
   nomad_deployment;
 ```
 
-### List the deployments in running state
+### List deployments which are not running
 
 ```sql
 select
@@ -40,14 +26,15 @@ select
   namespace,
   status,
   is_multiregion,
-  title
+  job_id,
+  job_version
 from
   nomad_deployment
 where
-  status = 'running';
+  status <> 'running';
 ```
 
-### List the multiregion deployments
+### List multi region deployments
 
 ```sql
 select
@@ -55,14 +42,15 @@ select
   namespace,
   status,
   is_multiregion,
-  title
+  job_id,
+  job_version
 from
   nomad_deployment
 where
   is_multiregion;
 ```
 
-### List the deployments with auto revert of tasks enabled
+### Show task group details of the deployments
 
 ```sql
 select
@@ -70,10 +58,7 @@ select
   namespace,
   status,
   is_multiregion,
-  title,
-  task_groups -> 'my-task' ->> 'AutoReert' as auto_revert
+  jsonb_pretty(task_groups) as task_groups
 from
-  nomad_deployment
-where
-  task_groups -> 'my-task' ->> 'AutoRevert' = 'true';
+  nomad_deployment;
 ```

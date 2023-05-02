@@ -1,6 +1,6 @@
 # Table: nomad_node
 
-Nomad Nodes are designed to keep both the end user and the node provider safe. All in one App.
+A node refers to a physical or virtual machine that is capable of running jobs. A node is typically a server or a worker machine that is part of a cluster, and it can run one or more Nomad agents.
 
 ## Examples
 
@@ -11,6 +11,7 @@ select
   name,
   id,
   node_class,
+  drain,
   status,
   datacenter,
   cgroup_parent
@@ -18,7 +19,7 @@ from
   nomad_node;
 ```
 
-### List all nodes with drain set to true
+### List nodes with drain set to true
 
 ```sql
 select
@@ -31,10 +32,10 @@ select
 from
   nomad_node
 where
-  drain = true;
+  drain;
 ```
 
-### List all nodes with TLS enabled
+### List nodes which are not ready
 
 ```sql
 select
@@ -47,10 +48,26 @@ select
 from
   nomad_node
 where
-  tls_enabled = true;
+  status <> 'ready';
 ```
 
-### List all nodes with the scheduling eligibility set to "eligible"
+### List nodes with TLS disabled
+
+```sql
+select
+  name,
+  id,
+  node_class,
+  status,
+  datacenter,
+  cgroup_parent
+from
+  nomad_node
+where
+  not tls_enabled;
+```
+
+### List nodes which are eligible for scheduling
 
 ```sql
 select
@@ -64,37 +81,4 @@ from
   nomad_node
 where
   scheduling_eligibility = 'eligible';
-```
-
-### List all nodes with the drain strategy set to "graceful"
-
-```sql
-select
-  name,
-  id,
-  node_class,
-  status,
-  datacenter,
-  cgroup_parent
-from
-  nomad_node
-where
-  drain_strategy ->> 'type' = 'graceful';
-```
-
-### List the nodes that have been drained in the last week, along with their drain metadata
-
-```sql
-select
-  name,
-  id,
-  node_class,
-  status,
-  datacenter,
-  cgroup_parent
-from
-  nomad_node
-where
-  (last_drain ->> 'end_time') > (NOW() - INTERVAL '7 days')::text
-  and drain = true;
 ```

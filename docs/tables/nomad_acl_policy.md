@@ -10,7 +10,6 @@ Policies consist of a set of rules defining the capabilities or actions to be gr
 select
   name,
   rules,
-  title,
   description,
   create_index,
   modify_index
@@ -18,17 +17,38 @@ from
   nomad_acl_policy;
 ```
 
-### List the policies that are attached to a job
+### List policies that are attached to any job
 
 ```sql
 select
   name,
   rules,
-  title,
   description,
-  jsonb_pretty(job_acl)
+  create_index,
+  modify_index
 from
   nomad_acl_policy
 where
   job_acl is not null;
+```
+
+### List policies which are attached to ACL tokens
+
+```sql
+select
+  name,
+  rules,
+  description,
+  create_index,
+  modify_index
+from
+  nomad_acl_policy
+where
+  name in
+  (
+    select
+      jsonb_array_elements_text(policies)
+    from
+      nomad_acl_token
+  );
 ```

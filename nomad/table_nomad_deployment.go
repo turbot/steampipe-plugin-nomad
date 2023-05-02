@@ -20,10 +20,6 @@ func tableNomadDeployment(ctx context.Context) *plugin.Table {
 					Name:    "namespace",
 					Require: plugin.Optional,
 				},
-				{
-					Name:    "status",
-					Require: plugin.Optional,
-				},
 			},
 		},
 		Get: &plugin.GetConfig{
@@ -56,12 +52,12 @@ func tableNomadDeployment(ctx context.Context) *plugin.Table {
 			{
 				Name:        "job_modify_index",
 				Type:        proto.ColumnType_INT,
-				Description: "ModifyIndex of the job which the deployment is tracking.",
+				Description: "Modify index of the job which the deployment is tracking.",
 			},
 			{
 				Name:        "job_spec_modify_index",
 				Type:        proto.ColumnType_INT,
-				Description: "JobModifyIndex of the job which the deployment is tracking.",
+				Description: "Job modify index of the job which the deployment is tracking.",
 			},
 			{
 				Name:        "job_create_index",

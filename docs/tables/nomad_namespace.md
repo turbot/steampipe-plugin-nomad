@@ -9,7 +9,6 @@ Nomad has support for namespaces, which allow jobs and their associated objects 
 ```sql
 select
   name,
-  title,
   description,
   create_index,
   modify_index
@@ -17,12 +16,11 @@ from
   nomad_namespace;
 ```
 
-### List the disabled task drivers of a namespace
+### List the disabled task drivers of namespaces
 
 ```sql
 select
   name,
-  title,
   description,
   capabilities -> 'DisabledTaskDrivers' as disabled_task_drivers
 from

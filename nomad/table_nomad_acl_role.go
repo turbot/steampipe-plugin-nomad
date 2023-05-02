@@ -17,7 +17,7 @@ func tableNomadACLRole(ctx context.Context) *plugin.Table {
 			Hydrate: listACLRoles,
 		},
 		Get: &plugin.GetConfig{
-			KeyColumns: plugin.SingleColumn("name"),
+			KeyColumns: plugin.SingleColumn("id"),
 			Hydrate:    getACLRole,
 		},
 		Columns: []*plugin.Column{
@@ -56,7 +56,7 @@ func tableNomadACLRole(ctx context.Context) *plugin.Table {
 			/// Steampipe standard columns
 			{
 				Name:        "title",
-				Description: "The title of the acl_role.",
+				Description: "The title of the acl role.",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Name"),
 			},
@@ -82,15 +82,10 @@ func listACLRoles(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 		PerPage: int32(maxLimit),
 	}
 
-	// Add support for optional region qual
-	if d.EqualsQuals["datacenter"] != nil {
-		input.Region = d.EqualsQuals["datacenter"].GetStringValue()
-	}
-
 	for {
 		roles, metadata, err := client.ACLRoles().List(input)
 		if err != nil {
-			plugin.Logger(ctx).Error("nomad_acl_role.listACLRoles", "query_error", err)
+			plugin.Logger(ctx).Error("nomad_acl_role.listACLRoles", "api_error", err)
 			return nil, err
 		}
 
@@ -113,15 +108,15 @@ func listACLRoles(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 
 func getACLRole(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	logger := plugin.Logger(ctx)
-	var name string
+	var id string
 	if h.Item != nil {
-		name = h.Item.(*api.ACLRoleListStub).Name
+		id = h.Item.(*api.ACLRoleListStub).ID
 	} else {
-		name = d.EqualsQualString("name")
+		id = d.EqualsQualString("id")
 	}
 
-	// check if name is empty
-	if name == "" {
+	// check if id is empty
+	if id == "" {
 		return nil, nil
 	}
 
@@ -132,7 +127,7 @@ func getACLRole(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData)
 		return nil, err
 	}
 
-	role, _, err := client.ACLRoles().Get(name, &api.QueryOptions{})
+	role, _, err := client.ACLRoles().Get(id, &api.QueryOptions{})
 	if err != nil {
 		logger.Error("nomad_acl_role.getACLRole", "api_error", err)
 		return nil, err

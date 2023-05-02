@@ -240,15 +240,10 @@ func listVolumes(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		PerPage: int32(maxLimit),
 	}
 
-	// Add support for optional region qual
-	if d.EqualsQuals["datacenter"] != nil {
-		input.Region = d.EqualsQuals["datacenter"].GetStringValue()
-	}
-
 	for {
 		volumes, metadata, err := client.CSIVolumes().List(input)
 		if err != nil {
-			plugin.Logger(ctx).Error("nomad_volume.listVolumes", "query_error", err)
+			plugin.Logger(ctx).Error("nomad_volume.listVolumes", "api_error", err)
 			return nil, err
 		}
 

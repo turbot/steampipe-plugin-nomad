@@ -19,7 +19,7 @@ from
   nomad_acl_auth_method;
 ```
 
-### List the default auth methods
+### List default auth methods
 
 ```sql
 select
@@ -30,10 +30,10 @@ select
 from
   nomad_acl_auth_method
 where
-  "default";
+  default_auth_method;
 ```
 
-### List the auth methods created in the last 30 days
+### List auth methods created in the last 30 days
 
 ```sql
 select
@@ -47,7 +47,7 @@ where
   create_time >= now() - interval '30' day;
 ```
 
-### List of access tokens which haven't been modified in the last 30 days
+### List auth methods with global token locality
 
 ```sql
 select
@@ -58,19 +58,33 @@ select
 from
   nomad_acl_auth_method
 where
-  modify_time <= now() - interval '30' day;
+  token_locality = 'global';
 ```
 
-### List all the auth methods that create a global token with SSO login
+### Get config details of a particular auth method
 
 ```sql
 select
   name,
-  title,
-  type,
-  create_time
+  config ->> 'JWKSURL' as "jwks_url",
+  config ->> 'JWKSCACert' as "jwks_ca_cert",
+  config -> 'OIDCScopes' as "oidc_scopes",
+  config -> 'BoundIssuer' as "bound_issuer",
+  config -> 'SigningAlgs' as "signing_algs",
+  config ->> 'OIDCClientID' as "oidc_client_id",
+  config -> 'ClaimMappings' as "claim_mappings",
+  config -> 'BoundAudiences' as "bound_audiences",
+  config -> 'DiscoveryCaPem' as "discovery_ca_pem",
+  config ->> 'ClockSkewLeeway' as "clock_skew_leeway",
+  config ->> 'NotBeforeLeeway' as "not_before_leeway",
+  config ->> 'ExpirationLeeway' as "expiration_leeway",
+  config ->> 'OIDCClientSecret' as "oidc_client_secret",
+  config ->> 'OIDCDiscoveryURL' as "oidc_discovery_url",
+  config -> 'ListClaimMappings' as "list_claim_mappings",
+  config -> 'AllowedRedirectURIs' as "allowed_redirect_uris",
+  config -> 'JWTValidationPubKeys' as "jwt_validation_pub_keys"
 from
   nomad_acl_auth_method
 where
-  token_locality like '%global%';
-  ```
+  name = 'auth-method';
+```

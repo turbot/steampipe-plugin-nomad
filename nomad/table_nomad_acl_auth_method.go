@@ -24,12 +24,12 @@ func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
 			{
 				Name:        "name",
 				Type:        proto.ColumnType_STRING,
-				Description: "The name of the acl_auth_method.",
+				Description: "The name of the acl auth method.",
 			},
 			{
 				Name:        "type",
 				Type:        proto.ColumnType_STRING,
-				Description: "Type is the SSO identifier this auth-method is.",
+				Description: "Type is the SSO identifier of this auth-method.",
 			},
 			{
 				Name:        "token_locality",
@@ -44,7 +44,7 @@ func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("MaxTokenTTL"),
 				Hydrate:     getACLAuthMethod,
 			},
-			// default is a keyword so here transform function has been used
+			// default is a keyword, so here transform function has been used
 			{
 				Name:        "default_auth_method",
 				Type:        proto.ColumnType_BOOL,
@@ -109,15 +109,10 @@ func listACLAuthMethods(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydr
 		PerPage: int32(maxLimit),
 	}
 
-	// Add support for optional region qual
-	if d.EqualsQuals["datacenter"] != nil {
-		input.Region = d.EqualsQuals["datacenter"].GetStringValue()
-	}
-
 	for {
 		authMethods, metadata, err := client.ACLAuthMethods().List(input)
 		if err != nil {
-			plugin.Logger(ctx).Error("nomad_acl_auth_method.listACLAuthMethods", "query_error", err)
+			plugin.Logger(ctx).Error("nomad_acl_auth_method.listACLAuthMethods", "api_error", err)
 			return nil, err
 		}
 
