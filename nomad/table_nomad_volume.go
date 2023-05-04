@@ -15,6 +15,12 @@ func tableNomadVolume(ctx context.Context) *plugin.Table {
 		Description: "Retrieve information about your volumes.",
 		List: &plugin.ListConfig{
 			Hydrate: listVolumes,
+			KeyColumns: []*plugin.KeyColumn{
+				{
+					Name:    "namespace",
+					Require: plugin.Optional,
+				},
+			},
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
@@ -238,6 +244,10 @@ func listVolumes(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 
 	input := &api.QueryOptions{
 		PerPage: int32(maxLimit),
+	}
+
+	if d.EqualsQuals["namespace"] != nil {
+		input.Namespace = d.EqualsQualString("namespace")
 	}
 
 	for {
