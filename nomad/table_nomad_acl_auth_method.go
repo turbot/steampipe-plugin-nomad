@@ -29,12 +29,12 @@ func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
 			{
 				Name:        "type",
 				Type:        proto.ColumnType_STRING,
-				Description: "Type is the SSO identifier of this auth-method.",
+				Description: "Type is the SSO identifier of this auth method.",
 			},
 			{
 				Name:        "token_locality",
 				Type:        proto.ColumnType_STRING,
-				Description: "Defines whether the auth-method creates a local or global token when performing SSO login.",
+				Description: "Defines whether the auth method creates a local or global token when performing SSO login.",
 				Hydrate:     getACLAuthMethod,
 			},
 			{
@@ -48,7 +48,7 @@ func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
 			{
 				Name:        "default_auth_method",
 				Type:        proto.ColumnType_BOOL,
-				Description: "Default identifies whether this is the default auth-method to use when attempting to login without specifying an auth-method name to use.",
+				Description: "Default identifies whether this is the default auth method to use when attempting to login without specifying an auth method name to use.",
 				Transform:   transform.FromField("Default"),
 			},
 			{
@@ -76,7 +76,7 @@ func tableNomadACLAuthMethod(ctx context.Context) *plugin.Table {
 			{
 				Name:        "config",
 				Type:        proto.ColumnType_JSON,
-				Description: "Config contains the detailed configuration which is specific to the auth-method.",
+				Description: "Config contains the detailed configuration which is specific to the auth method.",
 				Hydrate:     getACLAuthMethod,
 			},
 
