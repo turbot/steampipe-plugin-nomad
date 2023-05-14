@@ -2,6 +2,7 @@ package nomad
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/nomad/api"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
@@ -18,6 +19,14 @@ func tableNomadJob(ctx context.Context) *plugin.Table {
 			KeyColumns: []*plugin.KeyColumn{
 				{
 					Name:    "namespace",
+					Require: plugin.Optional,
+				},
+				{
+					Name:    "create_index",
+					Require: plugin.Optional,
+				},
+				{
+					Name:    "name",
 					Require: plugin.Optional,
 				},
 			},
@@ -261,8 +270,15 @@ func listJobs(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (
 		PerPage: int32(maxLimit),
 	}
 
-	if d.EqualsQuals["namespace"] != nil {
+	if d.EqualsQualString("namespace") != "" {
 		input.Namespace = d.EqualsQualString("namespace")
+	}
+	if d.EqualsQuals["create_index"] != nil {
+		input.Prefix = d.EqualsQuals["create_index"].GetStringValue()
+	}
+	if d.EqualsQualString("name") != "" {
+		filter := fmt.Sprintf("Name== %q\n", d.EqualsQualString("name"))
+		input.Filter = filter
 	}
 
 	for {

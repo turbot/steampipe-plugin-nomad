@@ -2,6 +2,7 @@ package nomad
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/nomad/api"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
@@ -18,6 +19,14 @@ func tableNomadDeployment(ctx context.Context) *plugin.Table {
 			KeyColumns: []*plugin.KeyColumn{
 				{
 					Name:    "namespace",
+					Require: plugin.Optional,
+				},
+				{
+					Name:    "create_index",
+					Require: plugin.Optional,
+				},
+				{
+					Name:    "job_id",
 					Require: plugin.Optional,
 				},
 			},
@@ -124,8 +133,15 @@ func listDeployments(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 		PerPage: int32(maxLimit),
 	}
 
-	if d.EqualsQuals["namespace"] != nil {
+	if d.EqualsQualString("namespace") != "" {
 		input.Namespace = d.EqualsQualString("namespace")
+	}
+	if d.EqualsQuals["create_index"] != nil {
+		input.Prefix = d.EqualsQuals["create_index"].GetStringValue()
+	}
+	if d.EqualsQualString("job_id") != "" {
+		filter := fmt.Sprintf("JobID== %q\n", d.EqualsQualString("job_id"))
+		input.Filter = filter
 	}
 
 	for {

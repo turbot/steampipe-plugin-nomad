@@ -2,6 +2,7 @@ package nomad
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/nomad/api"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
@@ -15,6 +16,16 @@ func tableNomadNode(ctx context.Context) *plugin.Table {
 		Description: "Retrieve information about your nodes.",
 		List: &plugin.ListConfig{
 			Hydrate: listNodes,
+			KeyColumns: []*plugin.KeyColumn{
+				{
+					Name:    "name",
+					Require: plugin.Optional,
+				},
+				{
+					Name:    "create_index",
+					Require: plugin.Optional,
+				},
+			},
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
@@ -212,6 +223,13 @@ func listNodes(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 
 	input := &api.QueryOptions{
 		PerPage: int32(maxLimit),
+	}
+	if d.EqualsQuals["create_index"] != nil {
+		input.Prefix = d.EqualsQuals["create_index"].GetStringValue()
+	}
+	if d.EqualsQualString("name") != "" {
+		filter := fmt.Sprintf("Name== %q\n", d.EqualsQualString("name"))
+		input.Filter = filter
 	}
 
 	for {

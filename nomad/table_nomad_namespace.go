@@ -15,6 +15,12 @@ func tableNomadNamespace(ctx context.Context) *plugin.Table {
 		Description: "Retrieve information about your namespaces.",
 		List: &plugin.ListConfig{
 			Hydrate: listNamespaces,
+			KeyColumns: []*plugin.KeyColumn{
+				{
+					Name:    "create_index",
+					Require: plugin.Optional,
+				},
+			},
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("name"),
@@ -84,6 +90,9 @@ func listNamespaces(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateD
 
 	input := &api.QueryOptions{
 		PerPage: int32(maxLimit),
+	}
+	if d.EqualsQuals["create_index"] != nil {
+		input.Prefix = d.EqualsQuals["create_index"].GetStringValue()
 	}
 
 	for {

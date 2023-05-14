@@ -2,6 +2,7 @@ package nomad
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/nomad/api"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
@@ -18,6 +19,10 @@ func tableNomadVolume(ctx context.Context) *plugin.Table {
 			KeyColumns: []*plugin.KeyColumn{
 				{
 					Name:    "namespace",
+					Require: plugin.Optional,
+				},
+				{
+					Name:    "name",
 					Require: plugin.Optional,
 				},
 			},
@@ -246,8 +251,12 @@ func listVolumes(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		PerPage: int32(maxLimit),
 	}
 
-	if d.EqualsQuals["namespace"] != nil {
+	if d.EqualsQualString("namespace") != "" {
 		input.Namespace = d.EqualsQualString("namespace")
+	}
+	if d.EqualsQualString("name") != "" {
+		filter := fmt.Sprintf("Name== %q\n", d.EqualsQualString("name"))
+		input.Filter = filter
 	}
 
 	for {

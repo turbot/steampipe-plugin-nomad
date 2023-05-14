@@ -2,6 +2,7 @@ package nomad
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/nomad/api"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
@@ -15,6 +16,12 @@ func tableNomadACLToken(ctx context.Context) *plugin.Table {
 		Description: "Retrieve information about your ACL tokens.",
 		List: &plugin.ListConfig{
 			Hydrate: listACLTokens,
+			KeyColumns: []*plugin.KeyColumn{
+				{
+					Name:    "name",
+					Require: plugin.Optional,
+				},
+			},
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("accessor_id"),
@@ -114,6 +121,10 @@ func listACLTokens(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDa
 
 	input := &api.QueryOptions{
 		PerPage: int32(maxLimit),
+	}
+	if d.EqualsQualString("name") != "" {
+		filter := fmt.Sprintf("Name== %q\n", d.EqualsQualString("name"))
+		input.Filter = filter
 	}
 
 	for {
