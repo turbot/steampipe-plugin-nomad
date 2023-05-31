@@ -57,7 +57,7 @@ steampipe plugin install nomad
 
 | Item        | Description                                                                                                                                                                              |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Credentials | Nomad requires an Address and Namespace or Address, Namespace and [Secret ID](https://developer.hashicorp.com/nomad/tutorials/access-control/access-control-tokens) for all requests.    |
+| Credentials | Nomad requires an `address` and `namespace` or `address`, `namespace` and [Secret ID](https://developer.hashicorp.com/nomad/tutorials/access-control/access-control-tokens) for all requests.    |
 | Permissions | The permission scope of Secret IDs is set by the Admin at the creation time of the ACL tokens.                                                                                           |
 | Radius      | Each connection represents a single Nomad Installation.                                                                                                                                  |
 | Resolution  | 1. Credentials explicitly set in a steampipe config file (`~/.steampipe/config/nomad.spc`)<br />2. Credentials specified in environment variables, e.g., `NOMAD_ADDR` and `NOMAD_TOKEN`. |
@@ -90,8 +90,6 @@ connection "nomad" {
 }
 ```
 
-## Configuring Nomad Credentials
-
 You may specify the Address and Namespace to authenticate:
 
 - `address`: The address of the nomad server.
@@ -105,7 +103,7 @@ connection "nomad" {
 }
 ```
 
-or you may specify the Address, Namespace and SecretID to authenticate:
+Or you may specify the Address, Namespace and SecretID to authenticate:
 
 - `address`: The address of the nomad server.
 - `namespace`: The Nomad Cluster namespace.
@@ -120,14 +118,12 @@ connection "nomad" {
 }
 ```
 
-or through environment variables
-
-The Nomad plugin will use the Nomad environment variable to obtain credentials **only if the `address`,`namespace` and `secret_id` is not specified** in the connection:
+Alternatively, you can also use the standard Namecheap environment variables to obtain credentials **only if the `address`,`namespace` and `secret_id` is not specified** in the connection:
 
 ```sh
-export NOMAD_ADDR="http://18.118.144.168:4646"
-export NOMAD_NAMESPACE="*"
-export NOMAD_TOKEN="c178b810-8b18-6f38-016f-725ddec5d58"
+export NOMAD_ADDR=http://18.118.144.168:4646
+export NOMAD_NAMESPACE=*
+export NOMAD_TOKEN=c178b810-8b18-6f38-016f-725ddec5d58
 ```
 
 ## Get involved

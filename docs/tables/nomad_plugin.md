@@ -31,7 +31,7 @@ select
 from
   nomad_plugin
 where
-  controller_rquired;
+  controller_required;
 ```
 
 ### Show the number of nodes and controllers associated with each plugin

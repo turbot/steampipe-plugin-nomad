@@ -19,7 +19,7 @@ from
   nomad_node;
 ```
 
-### List nodes with drain set to true
+### List nodes with drain enabled
 
 ```sql
 select

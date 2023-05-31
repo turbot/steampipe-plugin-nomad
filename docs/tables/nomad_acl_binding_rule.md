@@ -60,7 +60,5 @@ select
   b.bind_type as bind_type
 from
   nomad_acl_binding_rule as b
-  left join
-    nomad_acl_auth_method as a
-    on b.auth_method = a.name;
+  left join nomad_acl_auth_method as a on b.auth_method = a.name;
 ```

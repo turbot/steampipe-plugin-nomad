@@ -19,7 +19,7 @@ from
   nomad_volume;
 ```
 
-### List volumes with the access mode set to `ReadWriteOnce`
+### List volumes with access mode set to `ReadWriteOnce`
 
 ```sql
 select

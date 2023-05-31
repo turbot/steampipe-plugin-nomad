@@ -1,6 +1,6 @@
 # Table: nomad_job
 
-A Job is a specification provided by users that declares a workload for Nomad. A Job is a form of desired state; the user is expressing that the job should be running, but not where it should be run. The responsibility of Nomad is to make sure the actual state matches the user desired state. A Job is composed of one or more task groups.
+A job is a specification provided by users that declares a workload for Nomad. A job is a form of desired state; the user is expressing that the job should be running, but not where it should be run. The responsibility of Nomad is to make sure the actual state matches the user desired state. A job is composed of one or more task groups.
 
 ## Examples
 

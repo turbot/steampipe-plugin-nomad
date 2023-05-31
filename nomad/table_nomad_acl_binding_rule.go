@@ -35,7 +35,7 @@ func tableNomadACLBindingRule(ctx context.Context) *plugin.Table {
 			{
 				Name:        "auth_method",
 				Type:        proto.ColumnType_STRING,
-				Description: "The name of the auth method for which this rule applies to.",
+				Description: "The name of the auth method for which this rule applies.",
 			},
 			{
 				Name:        "selector",

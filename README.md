@@ -11,6 +11,8 @@ Use SQL to query nodes, jobs, deployments and more from Nomad.
 
 ## Quick start
 
+### Install
+
 Download and install the latest Nomad plugin:
 
 ```bash
@@ -19,24 +21,23 @@ steampipe plugin install nomad
 
 Configure your [credentials](https://hub.steampipe.io/plugins/turbot/nomad#credentials) and [config file](https://hub.steampipe.io/plugins/turbot/nomad#configuration).
 
-### Configuring Nomad Credentials
-
 Configure your account details in `~/.steampipe/config/nomad.spc`:
 
 You may specify the Address and Namespace to authenticate:
-
 - `address`: The address of the nomad server.
 - `namespace`: The Nomad Cluster namespace.
 
 ```hcl
 connection "nomad" {
   plugin    = "nomad"
+
+  # Authentication information
   address   = "http://18.118.144.168:4646"
   namespace = "*"
 }
 ```
 
-or you may specify the Address, Namespace and SecretID to authenticate:
+Or you may specify the Address, Namespace and SecretID to authenticate:
 
 - `address`: The address of the nomad server.
 - `namespace`: The Nomad Cluster namespace.
@@ -45,18 +46,20 @@ or you may specify the Address, Namespace and SecretID to authenticate:
 ```hcl
 connection "nomad" {
   plugin    = "nomad"
+
+  # Authentication information
   address   = "http://18.118.144.168:4646"
   namespace = "*"
   secret_id = "c178b810-8b18-6f38-016f-725ddec5d58"
 }
 ```
 
-or through environment variables
+Or through environment variables:
 
 ```sh
-export NOMAD_ADDR="http://18.118.144.168:4646"
-export NOMAD_NAMESPACE="*"
-export NOMAD_TOKEN="c178b810-8b18-6f38-016f-725ddec5d58"
+export NOMAD_ADDR=http://18.118.144.168:4646
+export NOMAD_NAMESPACE=*
+export NOMAD_TOKEN=c178b810-8b18-6f38-016f-725ddec5d58
 ```
 
 Run steampipe:
