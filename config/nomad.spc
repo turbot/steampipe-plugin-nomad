@@ -9,7 +9,7 @@ connection "nomad" {
   # For more information on the Namespace, please see https://developer.hashicorp.com/nomad/tutorials/manage-clusters/namespaces.
   # Can also be set with the NOMAD_NAMESPACE environment variable.
   # "*" indicates all the namespaces available.
-  namespace = "*"
+  # namespace = "*"
 
   # `secret_id` - The SecretID of an ACL token.
   # The SecretID is required to make requests for ACL-enabled clusters.

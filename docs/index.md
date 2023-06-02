@@ -58,7 +58,7 @@ steampipe plugin install nomad
 | Item        | Description                                                                                                                                                                              |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Credentials | Nomad requires an `address` and `namespace` or `address`, `namespace` and [Secret ID](https://developer.hashicorp.com/nomad/tutorials/access-control/access-control-tokens) for all requests.    |
-| Permissions | The permission scope of Secret IDs is set by the Admin at the creation time of the ACL tokens.                                                                                           |
+| Permissions | The permission scope of Secret IDs is set by the Admin at the creation time of the [ACL tokens](https://developer.hashicorp.com/nomad/tutorials/web-ui/web-ui-access).                                                                                           |
 | Radius      | Each connection represents a single Nomad Installation.                                                                                                                                  |
 | Resolution  | 1. Credentials explicitly set in a steampipe config file (`~/.steampipe/config/nomad.spc`)<br />2. Credentials specified in environment variables, e.g., `NOMAD_ADDR` and `NOMAD_TOKEN`. |
 
@@ -76,11 +76,11 @@ connection "nomad" {
   # Can also be set with the NOMAD_ADDR environment variable.
   # address = "http://18.118.164.168:4646"
 
-  # `namespace` - The Nomad cluster namespace.
+  # `namespace`(optional) - This feature requires HashiCorp Cloud Platform (HCP) or self-managed Nomad Enterprise. This parameter is not required in case of non-Enterprise access.
   # For more information on the Namespace, please see https://developer.hashicorp.com/nomad/tutorials/manage-clusters/namespaces.
   # Can also be set with the NOMAD_NAMESPACE environment variable.
   # "*" indicates all the namespaces available.
-  namespace = "*"
+  # namespace = "*"
 
   # `secret_id` - The SecretID of an ACL token.
   # The SecretID is required to make requests for ACL-enabled clusters.
@@ -90,40 +90,12 @@ connection "nomad" {
 }
 ```
 
-You may specify the Address and Namespace to authenticate:
-
-- `address`: The address of the nomad server.
-- `namespace`: The Nomad Cluster namespace.
-
-```hcl
-connection "nomad" {
-  plugin    = "nomad"
-  address   = "http://18.118.144.168:4646"
-  namespace = "*"
-}
-```
-
-Or you may specify the Address, Namespace and SecretID to authenticate:
-
-- `address`: The address of the nomad server.
-- `namespace`: The Nomad Cluster namespace.
-- `secret_id`: The SecretID of an ACL token.
-
-```hcl
-connection "nomad" {
-  plugin    = "nomad"
-  address   = "http://18.118.144.168:4646"
-  namespace = "*"
-  secret_id = "c178b810-8b18-6f38-016f-725ddec5d58"
-}
-```
-
-Alternatively, you can also use the standard Namecheap environment variables to obtain credentials **only if the `address`,`namespace` and `secret_id` is not specified** in the connection:
+Alternatively, you can also use the standard Nomad environment variable to obtain credentials **only if other arguments (`address`, `token`, and `namespace`) are not specified** in the connection:
 
 ```sh
 export NOMAD_ADDR=http://18.118.144.168:4646
-export NOMAD_NAMESPACE=*
 export NOMAD_TOKEN=c178b810-8b18-6f38-016f-725ddec5d58
+export NOMAD_NAMESPACE=*
 ```
 
 ## Get involved
