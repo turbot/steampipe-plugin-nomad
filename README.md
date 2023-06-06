@@ -27,10 +27,13 @@ Add your configuration details in `~/.steampipe/config/nomad.spc`:
 connection "nomad" {
   plugin    = "nomad"
   # Authentication information
-  address   = "http://52.14.112.248:8500"
-  token     = "c178b810-8b18-6f38-016f-725ddec5d58"
+  address   = "http://18.118.164.168:4646"
+  secret_id = "c178b810-8b18-6f38-016f-725ddec5d58"
 }
 ```
+
+- `secret_id` parameter is only required to query the ACL tables like `nomad_acl_auth_method`, `nomad_acl_binding_rule`, `nomad_acl_policy`, `nomad_acl_role` and `nomad_acl_token` tables.
+- `namespace` parameter is only required to query the `nomad_namespace` table.
 
 Or through environment variables:
 

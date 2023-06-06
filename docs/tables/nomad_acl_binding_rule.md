@@ -2,6 +2,8 @@
 
 Binding rules provide a mapping between a Nomad user's SSO authorization claims and internal Nomad objects such as ACL Roles and ACL Policies. A binding rule is directly related to a single auth method, and therefore only evaluated by login attempts using that method. All binding rules mapped to an auth method are evaluated during each login attempt.
 
+You need to specify the `secret_id` parameter in the `nomad.spc` file to be able to query this table.
+
 ## Examples
 
 ### Basic info

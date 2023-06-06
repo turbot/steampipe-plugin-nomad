@@ -2,7 +2,7 @@
 
 Nomad uses tokens to authenticate requests to the cluster. These tokens are created using the `nomad acl token create` command. When a token is being created, the operator can specify one or more policies to apply to the token. These policies determine if any action specified by the token bearer is authorized.
 
-You need to specify the `token` parameter in the `nomad.spc` file to be able to query this table.
+You need to specify the `secret_id` parameter in the `nomad.spc` file to be able to query this table.
 
 ## Examples
 

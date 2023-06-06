@@ -72,23 +72,25 @@ Configure your account details in `~/.steampipe/config/nomad.spc`:
 connection "nomad" {
   plugin = "nomad"
 
-  # `address` - The address of the Nomad server.
-  # Can also be set with the NOMAD_ADDR environment variable.
+  # Address is required for requests. Required.
+  # This can also be set via the NOMAD_ADDR environment variable.
   # address = "http://18.118.164.168:4646"
 
-  # `namespace`(optional) - This feature requires HashiCorp Cloud Platform (HCP) or self-managed Nomad Enterprise. This parameter is not required in case of non-Enterprise access.
-  # For more information on the Namespace, please see https://developer.hashicorp.com/nomad/tutorials/manage-clusters/namespaces.
-  # Can also be set with the NOMAD_NAMESPACE environment variable.
+  # The secret ID of ACL token is required for ACL-enabled Nomad servers. Optional.
+  # For more information on the ACL Token, please see https://developer.hashicorp.com/nomad/tutorials/access-control/access-control-tokens.
+  # This can also be set via the NOMAD_TOKEN environment variable.
+  # secret_id = "c178b810-8b18-6f38-016f-725ddec5d58"
+
+  # Namespace is required for Nomad Enterprise access. Optional.
+  # API will execute with default namespace if this parameter is not set.
+  # This can also be set via the NOMAD_NAMESPACE environment variable.
   # "*" indicates all the namespaces available.
   # namespace = "*"
-
-  # `secret_id` - The SecretID of an ACL token.
-  # The SecretID is required to make requests for ACL-enabled clusters.
-  # For more information on the ACL Token, please see https://developer.hashicorp.com/nomad/tutorials/access-control/access-control-tokens.
-  # Can also be set with the NOMAD_TOKEN environment variable.
-  # secret_id = "c178b810-8b18-6f38-016f-725ddec5d58"
 }
 ```
+
+- `secret_id` parameter is only required to query the ACL tables like `nomad_acl_auth_method`, `nomad_acl_binding_rule`, `nomad_acl_policy`, `nomad_acl_role` and `nomad_acl_token` tables.
+- `namespace` parameter is only required to query the `nomad_namespace` table.
 
 Alternatively, you can also use the standard Nomad environment variable to obtain credentials **only if other arguments (`address`, `token`, and `namespace`) are not specified** in the connection:
 
