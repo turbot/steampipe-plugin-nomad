@@ -2,7 +2,7 @@
 
 Authentication methods dictate how Nomad should talk to SSO providers when a user requests to authenticate using one. Currently, Nomad only supports the OpenID Connect (OIDC) SSO workflow which allows users to log in to Nomad via applications such as Auth0, Okta, and Vault.
 
-You need to specify the `secret_id` parameter in the `nomad.spc` file to be able to query this table.
+You need to specify the `secret_id` config argument in the `nomad.spc` file to be able to query this table.
 
 ## Examples
 

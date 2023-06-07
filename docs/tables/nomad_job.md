@@ -36,7 +36,7 @@ where
   not stable;
 ```
 
-### List multi region jobs
+### List multi-region jobs
 
 ```sql
 select
@@ -68,7 +68,7 @@ where
   status = 'pending';
 ```
 
-### List the jobs with `autorevert` enabled
+### List jobs with `autorevert` enabled
 
 ```sql
 select
@@ -83,7 +83,7 @@ where
   update ->> 'AutoRevert' = 'true';
 ```
 
-### Show the CSI plugin configuration for the jobs
+### Show the CSI plugin configuration of the jobs
 
 ```sql
 select

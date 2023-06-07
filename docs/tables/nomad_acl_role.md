@@ -2,7 +2,7 @@
 
 Roles group one or more ACL policies into a container which can then be used to generate ACL tokens for authorization. This abstraction allows easier control and updating of ACL permissions, particularly in larger, more diverse clusters.
 
-You need to specify the `secret_id` parameter in the `nomad.spc` file to be able to query this table.
+You need to specify the `secret_id` config argument in the `nomad.spc` file to be able to query this table.
 
 ## Examples
 

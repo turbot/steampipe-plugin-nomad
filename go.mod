@@ -2,7 +2,10 @@ module github.com/steampipe-plugin-nomad
 
 go 1.19
 
-require github.com/hashicorp/nomad/api v0.0.0-20230425144744-f12c957b4dae
+require (
+	github.com/hashicorp/nomad/api v0.0.0-20230425144744-f12c957b4dae
+	github.com/turbot/steampipe-plugin-sdk/v5 v5.4.1
+)
 
 require (
 	cloud.google.com/go v0.65.0 // indirect
@@ -111,6 +114,5 @@ require (
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/turbot/steampipe-plugin-sdk/v5 v5.4.1
 	golang.org/x/exp v0.0.0-20230108222341-4b8118a2686a // indirect
 )
