@@ -6,7 +6,7 @@ Use SQL to query nodes, jobs, deployments and more from Nomad.
 
 - **[Get started →](https://hub.steampipe.io/plugins/turbot/nomad)**
 - Documentation: [Table definitions & examples](https://hub.steampipe.io/plugins/turbot/nomad/tables)
-- Community: [Slack Channel](https://steampipe.io/community/join)
+- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
 - Get involved: [Issues](https://github.com/turbot/steampipe-plugin-nomad/issues)
 
 ## Quick start
