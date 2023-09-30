@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/hashicorp/nomad/api v0.0.0-20230425144744-f12c957b4dae
-	github.com/turbot/steampipe-plugin-sdk/v5 v5.6.0
+	github.com/turbot/steampipe-plugin-sdk/v5 v5.6.1
 )
 
 require (
