@@ -1,12 +1,20 @@
-# Table: nomad_acl_auth_method
+---
+title: "Steampipe Table: nomad_acl_auth_method - Query Nomad ACL Auth Methods using SQL"
+description: "Allows users to query Nomad ACL Auth Methods, specifically the information about the ACL Auth Methods configured in Nomad."
+---
 
-Authentication methods dictate how Nomad should talk to SSO providers when a user requests to authenticate using one. Currently, Nomad only supports the OpenID Connect (OIDC) SSO workflow which allows users to log in to Nomad via applications such as Auth0, Okta, and Vault.
+# Table: nomad_acl_auth_method - Query Nomad ACL Auth Methods using SQL
 
-You need to specify the `secret_id` config argument in the `nomad.spc` file to be able to query this table.
+Nomad ACL Auth Method is a feature within HashiCorp Nomad that provides a way to control access to resources and operations in a Nomad cluster. It allows operators to define a set of rules that can be used to restrict the actions that a user or group of users can perform. These rules can be used to create fine-grained access control policies that are tailored to the specific needs of your organization.
+
+## Table Usage Guide
+
+The `nomad_acl_auth_method` table offers insights into the ACL Auth Methods configured within HashiCorp Nomad. As a system administrator or DevOps engineer, leverage this table to understand the access control policies in place, including the rules and permissions associated with each method. This table can be instrumental in auditing your Nomad cluster's security configuration and ensuring that access controls are appropriately set.
 
 ## Examples
 
 ### Basic info
+Explore the creation and modification details of various access control methods in Nomad. This is useful for understanding the evolution and changes in your security settings over time.
 
 ```sql
 select
@@ -22,6 +30,7 @@ from
 ```
 
 ### List default auth methods
+Explore which authentication methods are set as default in your system. This can help in understanding the primary security measures in place and when they were established.
 
 ```sql
 select
@@ -36,6 +45,7 @@ where
 ```
 
 ### List auth methods created in the last 30 days
+Discover the segments that have been authorized in the last month. This could be used to monitor recent changes in access permissions, helping to maintain system security.
 
 ```sql
 select
@@ -50,6 +60,7 @@ where
 ```
 
 ### List auth methods with global token locality
+Explore which authentication methods have a global token locality. This is useful to understand which methods can be applied universally across your network.
 
 ```sql
 select
@@ -64,6 +75,7 @@ where
 ```
 
 ### Get config details of a particular auth method
+Explore the configuration details of a specific authentication method to understand its settings and parameters. This is useful for auditing security settings or troubleshooting authentication issues.
 
 ```sql
 select
