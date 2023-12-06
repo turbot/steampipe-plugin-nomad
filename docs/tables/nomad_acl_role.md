@@ -11,6 +11,9 @@ Nomad ACL Roles are a resource in HashiCorp's Nomad that allows you to define pe
 
 The `nomad_acl_role` table provides insights into ACL roles within HashiCorp's Nomad. As a DevOps engineer, explore role-specific details through this table, including role names, types, and associated policies. Utilize it to uncover information about roles, such as their permissions, the resources they have access to, and potential security risks in your Nomad environment.
 
+**Important Notes**
+- You need to specify the `secret_id` config argument in the `nomad.spc` file to be able to query this table.
+
 ## Examples
 
 ### Basic info

@@ -11,6 +11,9 @@ Nomad ACL Binding Rule is a resource in HashiCorp's Nomad that allows users to m
 
 The `nomad_acl_binding_rule` table provides insights into ACL Binding Rules within Nomad. As a DevOps engineer or a security analyst, you can explore rule-specific details through this table, including the associated policies and identity sources. Utilize it to manage and monitor access control lists in your Nomad environment, ensuring secure and efficient operation.
 
+**Important Notes**
+- You need to specify the `secret_id` config argument in the `nomad.spc` file to be able to query this table.
+
 ## Examples
 
 ### Basic info

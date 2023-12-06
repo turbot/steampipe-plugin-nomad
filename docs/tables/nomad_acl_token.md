@@ -11,6 +11,9 @@ Nomad ACL Tokens are used in HashiCorp Nomad to provide a flexible, capability-b
 
 The `nomad_acl_token` table provides insights into ACL Tokens within HashiCorp Nomad. As a security analyst, explore token-specific details through this table, including associated policies, token type, and related metadata. Utilize it to uncover information about tokens, such as those with broad permissions, and to verify the security of your Nomad deployment.
 
+**Important Notes**
+- You need to specify the `secret_id` config argument in the `nomad.spc` file to be able to query this table.
+
 ## Examples
 
 ### Basic info

@@ -11,6 +11,9 @@ Nomad Namespaces is a feature of HashiCorp's Nomad, an orchestration system that
 
 The `nomad_namespace` table provides insights into namespaces within HashiCorp's Nomad orchestration system. As a DevOps engineer, explore namespace-specific details through this table, including their configurations and associated metadata. Utilize it to understand the structure and organization of tasks within your Nomad system, and to enhance the efficiency and security of your task management.
 
+**Important Notes**
+- You need to specify the `namespace` config argument in the `nomad.spc` file to be able to query this table.
+
 ## Examples
 
 ### Basic info

@@ -11,6 +11,9 @@ Nomad Access Control List (ACL) Policies are a crucial aspect of Nomad's securit
 
 The `nomad_acl_policy` table provides insights into ACL policies within HashiCorp Nomad. As a security analyst, explore policy-specific details through this table, including policy names, descriptions, rules, and creation times. Utilize it to uncover information about policies, such as their specific permissions and the resources they apply to, providing a comprehensive view of your Nomad environment's security posture.
 
+**Important Notes**
+- You need to specify the `secret_id` config argument in the `nomad.spc` file to be able to query this table.
+
 ## Examples
 
 ### Basic info

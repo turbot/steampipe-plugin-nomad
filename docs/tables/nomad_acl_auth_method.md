@@ -11,6 +11,9 @@ Nomad ACL Auth Method is a feature within HashiCorp Nomad that provides a way to
 
 The `nomad_acl_auth_method` table offers insights into the ACL Auth Methods configured within HashiCorp Nomad. As a system administrator or DevOps engineer, leverage this table to understand the access control policies in place, including the rules and permissions associated with each method. This table can be instrumental in auditing your Nomad cluster's security configuration and ensuring that access controls are appropriately set.
 
+**Important Notes**
+- You need to specify the `secret_id` config argument in the `nomad.spc` file to be able to query this table.
+
 ## Examples
 
 ### Basic info
