@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/steampipe-plugin-nomad/nomad"
+	"github.com/turbot/steampipe-plugin-nomad/nomad"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 

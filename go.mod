@@ -1,4 +1,4 @@
-module github.com/steampipe-plugin-nomad
+module github.com/turbot/steampipe-plugin-nomad
 
 go 1.21
 
