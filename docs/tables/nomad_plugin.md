@@ -16,7 +16,19 @@ The `nomad_plugin` table provides insights into Plugins within Nomad. As a DevOp
 ### Basic info
 Explore which plugins are required for your controller by determining their version and provider. This aids in assessing the elements within your system for better management and updates.
 
-```sql
+```sql+postgres
+select
+  id,
+  controller_required,
+  version,
+  create_index,
+  modify_index,
+  provider
+from
+  nomad_plugin;
+```
+
+```sql+sqlite
 select
   id,
   controller_required,
@@ -31,7 +43,7 @@ from
 ### List CSI plugins that require a controller
 Analyze the settings to understand which CSI plugins necessitate a controller. This allows you to pinpoint the specific locations where controllers are required, ensuring your system configuration is optimized.
 
-```sql
+```sql+postgres
 select
   id,
   title,
@@ -45,10 +57,34 @@ where
   controller_required;
 ```
 
+```sql+sqlite
+select
+  id,
+  title,
+  version,
+  create_index,
+  modify_index,
+  provider
+from
+  nomad_plugin
+where
+  controller_required = 1;
+```
+
 ### Show the number of nodes and controllers associated with each plugin
 Discover the health status of your system by identifying the number of healthy nodes and controllers for each plugin. This information can be instrumental in assessing system performance and identifying potential areas for improvement.
 
-```sql
+```sql+postgres
+select
+  id,
+  version,
+  nodes_healthy,
+  controllers_healthy
+from
+  nomad_plugin;
+```
+
+```sql+sqlite
 select
   id,
   version,
@@ -61,7 +97,17 @@ from
 ### Show the number of expected nodes for each plugin
 Assess the elements within each plugin to understand the expected number of nodes. This information can be useful in planning and allocating resources effectively.
 
-```sql
+```sql+postgres
+select
+  id,
+  version,
+  nodes_healthy,
+  nodes_expected
+from
+  nomad_plugin;
+```
+
+```sql+sqlite
 select
   id,
   version,

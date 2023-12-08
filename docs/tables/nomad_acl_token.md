@@ -19,7 +19,20 @@ The `nomad_acl_token` table provides insights into ACL Tokens within HashiCorp N
 ### Basic info
 Assess the elements within your Nomad ACL tokens to understand the different types, their global status, creation time, and expiration time-to-live (TTL). This can help manage and track the lifecycle and accessibility of each token.
 
-```sql
+```sql+postgres
+select
+  name,
+  accessor_id,
+  secret_id,
+  type,
+  global,
+  create_time,
+  expiration_ttl
+from
+  nomad_acl_token;
+```
+
+```sql+sqlite
 select
   name,
   accessor_id,
@@ -35,7 +48,22 @@ from
 ### List management tokens
 Explore which management tokens are currently active in your system to understand their creation and expiration timelines. This can be beneficial for assessing your system's security by identifying potential vulnerabilities due to outdated or globally accessible tokens.
 
-```sql
+```sql+postgres
+select
+  name,
+  accessor_id,
+  secret_id,
+  type,
+  global,
+  create_time,
+  expiration_ttl
+from
+  nomad_acl_token
+where
+  type = 'management';
+```
+
+```sql+sqlite
 select
   name,
   accessor_id,
@@ -53,7 +81,7 @@ where
 ### List global tokens
 Explore which access control list (ACL) tokens in Nomad are set as global. This is useful in identifying potential security risks associated with globally accessible tokens.
 
-```sql
+```sql+postgres
 select
   name,
   accessor_id,
@@ -68,10 +96,40 @@ where
   global;
 ```
 
+```sql+sqlite
+select
+  name,
+  accessor_id,
+  secret_id,
+  type,
+  global,
+  create_time,
+  expiration_ttl
+from
+  nomad_acl_token
+where
+  global = 1;
+```
+
 ### List tokens which will never expire
 Uncover the details of access control list (ACL) tokens that have been set without an expiration time, thus identifying potential security risks due to tokens that will never expire. This is useful for maintaining secure practices by ensuring all tokens have a designated expiry.
 
-```sql
+```sql+postgres
+select
+  name,
+  accessor_id,
+  secret_id,
+  type,
+  global,
+  create_time,
+  expiration_ttl
+from
+  nomad_acl_token
+where
+  expiration_time is null;
+```
+
+```sql+sqlite
 select
   name,
   accessor_id,
@@ -89,7 +147,22 @@ where
 ### List tokens which are not associated with any role
 Discover the segments that consist of tokens which are not linked to any role. This is useful for identifying potential security risks, as these tokens may have been created without proper role assignments.
 
-```sql
+```sql+postgres
+select
+  name,
+  accessor_id,
+  secret_id,
+  type,
+  global,
+  create_time,
+  expiration_ttl
+from
+  nomad_acl_token
+where
+  roles is null;
+```
+
+```sql+sqlite
 select
   name,
   accessor_id,

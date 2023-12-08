@@ -19,7 +19,18 @@ The `nomad_acl_policy` table provides insights into ACL policies within HashiCor
 ### Basic info
 Explore the policies in your Nomad cluster to understand their rules and descriptions, as well as when they were created or last modified. This could be useful for auditing purposes or to ensure compliance with security protocols.
 
-```sql
+```sql+postgres
+select
+  name,
+  rules,
+  description,
+  create_index,
+  modify_index
+from
+  nomad_acl_policy;
+```
+
+```sql+sqlite
 select
   name,
   rules,
@@ -33,7 +44,20 @@ from
 ### List policies that are attached to any job
 Explore which policies are linked to a job to gain insights into their rules and descriptions, useful for understanding the permissions and restrictions associated with different jobs. This can help in effectively managing and modifying job-related policies.
 
-```sql
+```sql+postgres
+select
+  name,
+  rules,
+  description,
+  create_index,
+  modify_index
+from
+  nomad_acl_policy
+where
+  job_acl is not null;
+```
+
+```sql+sqlite
 select
   name,
   rules,
@@ -49,7 +73,7 @@ where
 ### List policies which are attached to ACL tokens
 Explore which policies are related to ACL tokens, allowing you to understand the rules and descriptions associated with each policy. This can help in managing and modifying your ACL tokens more effectively.
 
-```sql
+```sql+postgres
 select
   name,
   rules,
@@ -65,5 +89,25 @@ where
       jsonb_array_elements_text(policies)
     from
       nomad_acl_token
+  );
+```
+
+```sql+sqlite
+select
+  name,
+  rules,
+  description,
+  create_index,
+  modify_index
+from
+  nomad_acl_policy
+where
+  name in
+  (
+    select
+      json_each.value
+    from
+      nomad_acl_token,
+      json_each(policies)
   );
 ```

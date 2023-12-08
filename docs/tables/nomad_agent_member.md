@@ -16,7 +16,18 @@ The `nomad_agent_member` table provides insights into the members of a Nomad age
 ### Basic info
 Explore the status and details of various agents within the Nomad system. This can be useful in monitoring network health and identifying potential issues with specific agents.
 
-```sql
+```sql+postgres
+select
+  name,
+  address,
+  port,
+  status,
+  protocol_cur
+from
+  nomad_agent_member;
+```
+
+```sql+sqlite
 select
   name,
   address,
@@ -30,7 +41,7 @@ from
 ### List global agents
 Explore which global agents are currently active in your network. This can help you manage your resources more efficiently and identify potential issues with network connectivity or performance.
 
-```sql
+```sql+postgres
 select
   name,
   address,
@@ -43,10 +54,36 @@ where
   tags ->> 'region' = 'global';
 ```
 
+```sql+sqlite
+select
+  name,
+  address,
+  port,
+  status,
+  protocol_cur
+from
+  nomad_agent_member
+where
+  json_extract(tags, '$.region') = 'global';
+```
+
 ### List agents which are not `alive`
 Discover the details of agents that are not currently active. This query can be used to identify potential issues or disruptions in your network by pinpointing inactive agents.
 
-```sql
+```sql+postgres
+select
+  name,
+  address,
+  port,
+  status,
+  protocol_cur
+from
+  nomad_agent_member
+where
+  status <> 'alive';
+```
+
+```sql+sqlite
 select
   name,
   address,

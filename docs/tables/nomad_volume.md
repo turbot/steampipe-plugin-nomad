@@ -16,7 +16,20 @@ The `nomad_volume` table provides insights into the volumes within the Nomad orc
 ### Basic info
 Explore the fundamental details of your storage volumes, such as their identification, capacity, and associated provider, to better understand and manage your resources. This information can be particularly useful for identifying capacity issues or for tracking volumes across different providers.
 
-```sql
+```sql+postgres
+select
+  id,
+  name,
+  clone_id,
+  capacity,
+  namespace,
+  provider,
+  plugin_id
+from
+  nomad_volume;
+```
+
+```sql+sqlite
 select
   id,
   name,
@@ -32,7 +45,7 @@ from
 ### List volumes with access mode set to `ReadWriteOnce`
 Explore which volumes have their access mode set to 'ReadWriteOnce'. This can be useful for managing data accessibility and ensuring specific volumes are not simultaneously written by multiple users.
 
-```sql
+```sql+postgres
 select
   id,
   name,
@@ -47,10 +60,40 @@ where
   access_mode ->> 'mode' = 'ReadWriteOnce';
 ```
 
+```sql+sqlite
+select
+  id,
+  name,
+  clone_id,
+  capacity,
+  namespace,
+  provider,
+  plugin_id
+from
+  nomad_volume
+where
+  json_extract(access_mode, '$.mode') = 'ReadWriteOnce';
+```
+
 ### List volumes with at least one healthy node
 Explore which volumes in your system are functioning optimally by identifying those with at least one healthy node. This can be beneficial for system maintenance and troubleshooting.
 
-```sql
+```sql+postgres
+select
+  id,
+  name,
+  clone_id,
+  capacity,
+  namespace,
+  provider,
+  plugin_id
+from
+  nomad_volume
+where
+  nodes_healthy > 0;
+```
+
+```sql+sqlite
 select
   id,
   name,
@@ -68,7 +111,7 @@ where
 ### List schedulable volumes
 Discover the volumes that can be scheduled for tasks, helping in managing and optimizing resource allocation. This can be particularly useful in understanding and maximizing the utilization of your storage resources.
 
-```sql
+```sql+postgres
 select
   id,
   name,
@@ -83,10 +126,40 @@ where
   schedulable;
 ```
 
+```sql+sqlite
+select
+  id,
+  name,
+  clone_id,
+  capacity,
+  namespace,
+  provider,
+  plugin_id
+from
+  nomad_volume
+where
+  schedulable = 1;
+```
+
 ### List volumes present in default namespace
 Explore the storage volumes present within the default operational space. This is useful for understanding the current storage usage and capacity management within your default namespace.
 
-```sql
+```sql+postgres
+select
+  id,
+  name,
+  clone_id,
+  capacity,
+  namespace,
+  provider,
+  plugin_id
+from
+  nomad_volume
+where
+  namespace = 'default';
+```
+
+```sql+sqlite
 select
   id,
   name,

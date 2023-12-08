@@ -16,7 +16,21 @@ The `nomad_job` table provides insights into the jobs scheduled within HashiCorp
 ### Basic info
 Explore which jobs are currently active by determining their status and type. This can help in understanding the workload distribution across different regions, and track any changes over time.
 
-```sql
+```sql+postgres
+select
+  id,
+  name,
+  namespace,
+  status,
+  type,
+  region,
+  modify_index,
+  submit_time
+from
+  nomad_job;
+```
+
+```sql+sqlite
 select
   id,
   name,
@@ -33,7 +47,7 @@ from
 ### List unstable jobs
 Discover the segments that contain unstable jobs across various regions and namespaces, helping you identify areas that may require troubleshooting or further investigation.
 
-```sql
+```sql+postgres
 select
   id,
   name,
@@ -47,10 +61,38 @@ where
   not stable;
 ```
 
+```sql+sqlite
+select
+  id,
+  name,
+  namespace,
+  status,
+  type,
+  region
+from
+  nomad_job
+where
+  stable = 0;
+```
+
 ### List multi-region jobs
 Discover the segments that have jobs spanning multiple regions, enabling you to manage and monitor tasks across different geographical areas more effectively.
 
-```sql
+```sql+postgres
+select
+  id,
+  name,
+  namespace,
+  status,
+  region,
+  multiregion
+from
+  nomad_job
+where
+  multiregion is not null;
+```
+
+```sql+sqlite
 select
   id,
   name,
@@ -67,7 +109,21 @@ where
 ### List pending jobs
 Discover the segments that consist of jobs awaiting execution, enabling you to manage and prioritize your workflow more effectively. This can be particularly useful in scenarios where resource allocation and task scheduling are critical.
 
-```sql
+```sql+postgres
+select
+  id,
+  name,
+  namespace,
+  status,
+  region,
+  multiregion
+from
+  nomad_job
+where
+  status = 'pending';
+```
+
+```sql+sqlite
 select
   id,
   name,
@@ -84,7 +140,7 @@ where
 ### List jobs with `autorevert` enabled
 Explore which jobs have the 'autorevert' feature enabled. This can be particularly useful for understanding and managing job configurations in a Nomad cluster.
 
-```sql
+```sql+postgres
 select
   id,
   name,
@@ -97,10 +153,23 @@ where
   update ->> 'AutoRevert' = 'true';
 ```
 
+```sql+sqlite
+select
+  id,
+  name,
+  namespace,
+  status,
+  json_extract(update, '$.AutoRevert') as auto_revert
+from
+  nomad_job
+where
+  json_extract(update, '$.AutoRevert') = 'true';
+```
+
 ### Show the CSI plugin configuration of the jobs
 Analyze the configuration of job-specific CSI plugins to understand their types and health timeout settings. This can help in monitoring and managing the performance and health of these plugins.
 
-```sql
+```sql+postgres
 select
   id as job_id,
   name as job_name,
@@ -111,4 +180,17 @@ from
   nomad_job,
   jsonb_array_elements(task_groups) as tg,
   jsonb_array_elements(tg -> 'Tasks') as t;
+```
+
+```sql+sqlite
+select
+  nomad_job.id as job_id,
+  nomad_job.name as job_name,
+  json_extract(t.value, '$.CSIPluginConfig.ID') as csi_plugin_id,
+  json_extract(t.value, '$.CSIPluginConfig.Type') as csi_plugin_type,
+  json_extract(t.value, '$.CSIPluginConfig.HealthTimeout') as csi_plugin_timeout
+from
+  nomad_job,
+  json_each(nomad_job.task_groups) as tg,
+  json_each(json_extract(tg.value, '$.Tasks')) as t;
 ```

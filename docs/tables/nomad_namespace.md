@@ -19,7 +19,17 @@ The `nomad_namespace` table provides insights into namespaces within HashiCorp's
 ### Basic info
 Explore the basic information of your namespaces in Nomad to gain insights into their creation and modification indices. This can be useful for tracking changes and understanding the lifecycle of your namespaces.
 
-```sql
+```sql+postgres
+select
+  name,
+  description,
+  create_index,
+  modify_index
+from
+  nomad_namespace;
+```
+
+```sql+sqlite
 select
   name,
   description,
@@ -32,11 +42,20 @@ from
 ### List the disabled task drivers of namespaces
 Uncover the details of task drivers that are inactive within various namespaces. This allows for an assessment of system capabilities and potential areas of improvement.
 
-```sql
+```sql+postgres
 select
   name,
   description,
   capabilities -> 'DisabledTaskDrivers' as disabled_task_drivers
+from
+  nomad_namespace;
+```
+
+```sql+sqlite
+select
+  name,
+  description,
+  json_extract(capabilities, '$.DisabledTaskDrivers') as disabled_task_drivers
 from
   nomad_namespace;
 ```

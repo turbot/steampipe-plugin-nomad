@@ -19,7 +19,18 @@ The `nomad_acl_role` table provides insights into ACL roles within HashiCorp's N
 ### Basic info
 Explore which access control roles have been created and modified in your Nomad environment, allowing you to maintain security and manage user permissions effectively.
 
-```sql
+```sql+postgres
+select
+  id,
+  name,
+  description,
+  create_index,
+  modify_index
+from
+  nomad_acl_role;
+```
+
+```sql+sqlite
 select
   id,
   name,
@@ -33,7 +44,7 @@ from
 ### Show ACL policies attached to a particular ACL role
 Identify the access control policies linked to a specific role to understand its permissions and restrictions. This could be useful in auditing or updating security measures.
 
-```sql
+```sql+postgres
 select
   name,
   rules,
@@ -55,10 +66,32 @@ where
   );
 ```
 
+```sql+sqlite
+select
+  name,
+  rules,
+  description,
+  create_index,
+  modify_index
+from
+  nomad_acl_policy
+where
+  name in
+  (
+    select
+      json_extract(p.value, '$.Name')
+    from
+      nomad_acl_role,
+      json_each(policies) as p
+    where
+      name = 'aclRole'
+  );
+```
+
 ### List roles which are attached to ACL tokens
 Determine the roles associated with ACL tokens in your system to understand their permissions and access levels. This can be useful in managing security and ensuring proper access control within your network.
 
-```sql
+```sql+postgres
 select
   id,
   name,
@@ -74,5 +107,25 @@ where
       jsonb_array_elements_text(roles)
     from
       nomad_acl_token
+  );
+```
+
+```sql+sqlite
+select
+  id,
+  name,
+  description,
+  create_index,
+  modify_index
+from
+  nomad_acl_role
+where
+  name in
+  (
+    select
+      json_each.value
+    from
+      nomad_acl_token,
+      json_each(roles)
   );
 ```
