@@ -101,7 +101,4 @@ export NOMAD_TOKEN=c178b810-8b18-6f38-016f-725ddec5d58
 export NOMAD_NAMESPACE=*
 ```
 
-## Get involved
 
-- Open source: https://github.com/turbot/steampipe-plugin-nomad
-- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
