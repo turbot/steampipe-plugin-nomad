@@ -8,6 +8,7 @@ short_name: "nomad"
 description: "Steampipe plugin to query nodes, jobs, deployments and more from Nomad."
 og_description: "Query Nomad with SQL! Open source CLI. No DB required."
 og_image: "/images/plugins/turbot/nomad-social-graphic.png"
+engines: ["steampipe", "sqlite", "postgres", "export"]
 ---
 
 # Nomad + Steampipe
