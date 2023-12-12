@@ -7,25 +7,12 @@ import (
 
 	"github.com/hashicorp/nomad/api"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/schema"
 )
 
 type nomadConfig struct {
-	Address   *string `cty:"address"`
-	Namespace *string `cty:"namespace"`
-	SecretID  *string `cty:"secret_id"`
-}
-
-var ConfigSchema = map[string]*schema.Attribute{
-	"address": {
-		Type: schema.TypeString,
-	},
-	"namespace": {
-		Type: schema.TypeString,
-	},
-	"secret_id": {
-		Type: schema.TypeString,
-	},
+	Address   *string `hcl:"address"`
+	Namespace *string `hcl:"namespace"`
+	SecretID  *string `hcl:"secret_id"`
 }
 
 func ConfigInstance() interface{} {
