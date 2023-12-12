@@ -8,13 +8,14 @@ short_name: "nomad"
 description: "Steampipe plugin to query nodes, jobs, deployments and more from Nomad."
 og_description: "Query Nomad with SQL! Open source CLI. No DB required."
 og_image: "/images/plugins/turbot/nomad-social-graphic.png"
+engines: ["steampipe", "sqlite", "postgres", "export"]
 ---
 
 # Nomad + Steampipe
 
 [Nomad](https://www.nomadproject.io/) is a simple and flexible scheduler and orchestrator for managing containers and non-containerized applications across on-prem and clouds at scale.
 
-[Steampipe](https://steampipe.io) is an open source CLI to instantly query cloud APIs using SQL.
+[Steampipe](https://steampipe.io) is an open-source zero-ETL engine to instantly query cloud APIs using SQL.
 
 List your Nomad jobs:
 
@@ -100,7 +101,4 @@ export NOMAD_TOKEN=c178b810-8b18-6f38-016f-725ddec5d58
 export NOMAD_NAMESPACE=*
 ```
 
-## Get involved
 
-- Open source: https://github.com/turbot/steampipe-plugin-nomad
-- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
