@@ -1,12 +1,12 @@
 module github.com/turbot/steampipe-plugin-nomad
 
-go 1.21.0
+go 1.22.4
 
-toolchain go1.21.1
+toolchain go1.22.6
 
 require (
 	github.com/hashicorp/nomad/api v0.0.0-20230425144744-f12c957b4dae
-	github.com/turbot/steampipe-plugin-sdk/v5 v5.10.1
+	github.com/turbot/steampipe-plugin-sdk/v5 v5.10.4
 )
 
 require (
@@ -36,7 +36,7 @@ require (
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.12.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1 // indirect
-	github.com/hashicorp/go-getter v1.7.4 // indirect
+	github.com/hashicorp/go-getter v1.7.5 // indirect
 	github.com/hashicorp/go-hclog v1.6.2 // indirect
 	github.com/hashicorp/go-plugin v1.6.0 // indirect
 	github.com/hashicorp/go-safetemp v1.0.0 // indirect
