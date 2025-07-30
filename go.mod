@@ -1,12 +1,12 @@
 module github.com/turbot/steampipe-plugin-nomad
 
-go 1.23.1
+go 1.24
 
-toolchain go1.23.2
+toolchain go1.24.1
 
 require (
 	github.com/hashicorp/nomad/api v0.0.0-20230425144744-f12c957b4dae
-	github.com/turbot/steampipe-plugin-sdk/v5 v5.11.7
+	github.com/turbot/steampipe-plugin-sdk/v5 v5.13.0
 )
 
 require (
@@ -76,7 +76,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.26.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.2.0 // indirect
 	golang.org/x/net v0.38.0 // indirect
-	golang.org/x/oauth2 v0.21.0 // indirect
+	golang.org/x/oauth2 v0.27.0 // indirect
 	golang.org/x/sync v0.12.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
