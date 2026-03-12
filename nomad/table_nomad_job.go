@@ -308,10 +308,14 @@ func listJobs(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (
 func getJob(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	logger := plugin.Logger(ctx)
 	var id string
+	var namespace string
 	if h.Item != nil {
-		id = h.Item.(*api.JobListStub).ID
+		stub := h.Item.(*api.JobListStub)
+		id = stub.ID
+		namespace = stub.Namespace
 	} else {
 		id = d.EqualsQualString("id")
+		namespace = d.EqualsQualString("namespace")
 	}
 
 	// check if id is empty
@@ -322,13 +326,15 @@ func getJob(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (in
 	// Create client
 	client, err := getClient(ctx, d)
 	if err != nil {
-		logger.Error("nomad_node.getJob", "connection_error", err)
+		logger.Error("nomad_job.getJob", "connection_error", err)
 		return nil, err
 	}
 
-	job, _, err := client.Jobs().Info(id, &api.QueryOptions{})
+	job, _, err := client.Jobs().Info(id, &api.QueryOptions{
+		Namespace: namespace,
+	})
 	if err != nil {
-		logger.Error("nomad_node.getJob", "api_error", err)
+		logger.Error("nomad_job.getJob", "api_error", err)
 		return nil, err
 	}
 
