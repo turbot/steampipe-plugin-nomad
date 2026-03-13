@@ -170,7 +170,16 @@ func listDeployments(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 
 func getDeployment(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	logger := plugin.Logger(ctx)
-	id := d.EqualsQualString("id")
+	var id string
+	var namespace string
+	if h.Item != nil {
+		stub := h.Item.(*api.Deployment)
+		id = stub.ID
+		namespace = stub.Namespace
+	} else {
+		id = d.EqualsQualString("id")
+		namespace = d.EqualsQualString("namespace")
+	}
 
 	// check if id is empty
 	if id == "" {
@@ -180,11 +189,13 @@ func getDeployment(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDa
 	// Create client
 	client, err := getClient(ctx, d)
 	if err != nil {
-		logger.Error("nomad_node.getDeployment", "connection_error", err)
+		logger.Error("nomad_deployment.getDeployment", "connection_error", err)
 		return nil, err
 	}
 
-	deployment, _, err := client.Deployments().Info(id, &api.QueryOptions{})
+	deployment, _, err := client.Deployments().Info(id, &api.QueryOptions{
+		Namespace: namespace,
+	})
 	if err != nil {
 		logger.Error("nomad_node.getDeployment", "api_error", err)
 		return nil, err

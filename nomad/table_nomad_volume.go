@@ -286,10 +286,14 @@ func listVolumes(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 func getVolume(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	logger := plugin.Logger(ctx)
 	var id string
+	var namespace string
 	if h.Item != nil {
-		id = h.Item.(*api.CSIVolumeListStub).ID
+		stub := h.Item.(*api.CSIVolumeListStub)
+		id = stub.ID
+		namespace = stub.Namespace
 	} else {
 		id = d.EqualsQualString("id")
+		namespace = d.EqualsQualString("namespace")
 	}
 
 	// check if id is empty
@@ -300,11 +304,13 @@ func getVolume(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) 
 	// Create client
 	client, err := getClient(ctx, d)
 	if err != nil {
-		logger.Error("nomad_node.getVolume", "connection_error", err)
+		logger.Error("nomad_volume.getVolume", "connection_error", err)
 		return nil, err
 	}
 
-	volume, _, err := client.CSIVolumes().Info(id, &api.QueryOptions{})
+	volume, _, err := client.CSIVolumes().Info(id, &api.QueryOptions{
+		Namespace: namespace,
+	})
 	if err != nil {
 		logger.Error("nomad_node.getVolume", "api_error", err)
 		return nil, err
