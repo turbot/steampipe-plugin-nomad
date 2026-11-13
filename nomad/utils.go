@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin/transform"
 )
 
 func convertNanoSecToTimestamp(_ context.Context, d *transform.TransformData) (interface{}, error) {

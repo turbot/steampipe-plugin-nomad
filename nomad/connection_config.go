@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/hashicorp/nomad/api"
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin"
 )
 
 type nomadConfig struct {
@@ -20,10 +20,10 @@ func ConfigInstance() interface{} {
 }
 
 func GetConfig(connection *plugin.Connection) nomadConfig {
-	if connection == nil || connection.Config == nil {
+	if connection == nil || connection.GetConfig() == nil {
 		return nomadConfig{}
 	}
-	config, _ := connection.Config.(nomadConfig)
+	config, _ := connection.GetConfig().(nomadConfig)
 	return config
 }
 
@@ -53,5 +53,5 @@ func getClient(ctx context.Context, d *plugin.QueryData) (*api.Client, error) {
 		return client, nil
 	}
 
-	return nil, errors.New("'address' or ('address' and 'secret_id') must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe.")
+	return nil, errors.New("'address' or ('address' and 'secret_id') must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
 }
